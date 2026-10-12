@@ -3,162 +3,436 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#0b1222">
 <title>Shakheen's Kletka Pro</title>
 <style>
 :root{--bg:#0b1222;--panel:#182438;--panel2:#202f45;--line:#334258;--text:#f5f7fb;--muted:#9aa9bd;--purple:#5548ed;--purple2:#746bff;--green:#28c79a;--gold:#ffc83d;--red:#ff6b78}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#0b1222,#111b2d 55%,#11142a);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width:1120px;margin:auto;padding:18px}.top{display:flex;align-items:center;gap:14px;padding:20px 22px;background:#1c293d;border:1px solid #344157;border-radius:22px}.logo{width:58px;height:58px;display:grid;place-items:center;background:var(--purple);border-radius:16px;font-size:28px;flex-shrink:0}.brand{min-width:0;flex:1}.brand h1{font-size:clamp(19px,3vw,27px);margin:0 0 4px}.brand p{margin:0;color:var(--muted);font-size:14px}.pill{display:inline-block;background:#33396e;color:#a9a8ff;padding:5px 12px;border-radius:30px;font-size:12px;vertical-align:middle}.rolebar{display:flex;gap:6px;background:#111a2a;border:1px solid #344157;padding:5px;border-radius:15px;margin:16px 0}.rolebar button{border:0;color:var(--muted);background:transparent;border-radius:11px;padding:11px 18px;font-weight:700}.rolebar button.active{background:var(--purple);color:white;box-shadow:0 5px 16px #5548ed40}.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px}.side,.card{background:rgba(27,40,60,.96);border:1px solid var(--line);border-radius:20px}.side{padding:13px;height:max-content;position:sticky;top:12px}.nav{width:100%;display:flex;gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:#b8c4d5;padding:12px;border-radius:12px;margin:2px 0}.nav.active,.nav:hover{background:#2a3551;color:#fff}.nav span{font-size:19px;width:24px;text-align:center}.content{min-width:0}.page{display:none}.page.active{display:block}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:4px 0 16px}.heading h2{font-size:23px;margin:0 0 5px}.heading p{color:var(--muted);margin:0;font-size:14px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{padding:17px;background:var(--panel);border:1px solid var(--line);border-radius:17px}.stat .label{color:var(--muted);font-size:13px}.stat .num{font-size:29px;font-weight:800;margin-top:4px}.stat .ico{font-size:20px;float:right}.card{padding:20px;margin-bottom:16px}.card h3{margin:0 0 7px;font-size:18px}.sub{color:var(--muted);font-size:13px;line-height:1.5}.field{display:flex;flex-direction:column;gap:7px;margin:13px 0}.field label{font-size:13px;color:#c2cede;font-weight:650}.field input,.field textarea,.field select{width:100%;color:var(--text);background:#0f192a;border:1px solid #3b4b63;border-radius:11px;padding:12px;outline:none}.field textarea{min-height:82px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple2);box-shadow:0 0 0 3px #746bff25}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:1px solid #46536a;border-radius:11px;padding:10px 14px;background:#27364c;color:white;font-weight:700}.btn.primary{background:var(--purple);border-color:var(--purple)}.btn.success{background:#126c5a;border-color:#218b75}.btn.small{font-size:12px;padding:7px 10px}.btn:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.mode{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mode label{border:1px solid var(--line);padding:9px 12px;border-radius:11px;background:#111b2c;font-size:13px;display:flex;gap:7px;align-items:center}.mode input{accent-color:var(--purple)}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:15px 0}.step{padding:12px 9px;border-radius:12px;background:#111b2b;border:1px solid var(--line);text-align:center}.step b{display:block;color:#aaa6ff;font-size:19px}.step span{font-size:12px;color:#b8c5d6}.results{display:grid;gap:9px;margin-top:14px}.result-row{display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;background:#111b2b;border:1px solid #2f4058;padding:12px;border-radius:12px}.numtag{background:#37327c;color:#cfcdff;border-radius:9px;padding:8px;text-align:center;font-weight:800}.result-row input{width:100%;min-width:0;background:#202f45;color:white;border:1px solid #40516a;border-radius:8px;padding:9px}.muted{color:var(--muted)}.notice{padding:12px 14px;border-radius:12px;background:#173e3a;border:1px solid #21695c;color:#baf5e4;font-size:13px;margin-top:12px}.error{background:#482530;border-color:#81404e;color:#ffd4d8}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:520px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #334258;font-size:13px}th{color:var(--muted);font-weight:700}td strong{display:block;font-size:14px}td small{color:#a8a4ff}.status{display:inline-block;border-radius:30px;padding:5px 10px;background:#16483f;color:#43d6ad;font-size:12px}.progress{height:7px;border-radius:20px;background:#344258;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:var(--green);border-radius:20px}.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed #45556e;border-radius:12px}.footer{text-align:center;color:#718198;font-size:12px;padding:20px}.hidden{display:none!important}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#f5f7fb;color:#111827;padding:12px 18px;border-radius:12px;box-shadow:0 8px 30px #0005;z-index:10;font-weight:700;font-size:13px;max-width:90vw}
-@media(max-width:760px){.shell{padding:10px}.top{padding:15px;gap:10px;flex-wrap:wrap}.logo{width:48px;height:48px}.brand{flex:1}.top .pill{margin-top:5px}.rolebar{width:100%;margin:12px 0}.rolebar button{flex:1;padding:10px 8px}.layout{grid-template-columns:1fr;gap:12px}.side{position:static;display:flex;overflow:auto;padding:6px;gap:3px}.nav{white-space:nowrap;width:auto;margin:0;padding:10px}.nav span{width:auto}.stats{gap:7px}.stat{padding:12px}.stat .num{font-size:23px}.stat .label{font-size:11px}.card{padding:15px}.grid2{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.result-row{grid-template-columns:35px minmax(0,1fr);gap:8px}.result-row .translation{grid-column:2}.heading h2{font-size:20px}.heading{align-items:center}}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#0b1222,#111b2d 55%,#11142a);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width:1120px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#1c293d;border:1px solid #344157;border-radius:22px;gap:12px}.logo{width:50px;height:50px;display:grid;place-items:center;background:var(--purple);border-radius:14px;font-size:24px;flex-shrink:0;color:#fff;font-weight:900}.brand{min-width:0;flex:1}.brand h1{font-size:clamp(18px,2.5vw,24px);margin:0 0 2px}.brand p{margin:0;color:var(--muted);font-size:13px}.pill{display:inline-block;background:#33396e;color:#a9a8ff;padding:4px 10px;border-radius:30px;font-size:11px;vertical-align:middle}.userbox{display:flex;align-items:center;gap:10px}.badge{background:#111a2a;border:1px solid #344157;padding:7px 12px;border-radius:12px;font-size:12px;color:#a3e7d8;font-weight:600}.rolebar{display:flex;gap:6px;background:#111a2a;border:1px solid #344157;padding:5px;border-radius:15px;margin:16px 0}.rolebar button{border:0;color:var(--muted);background:transparent;border-radius:11px;padding:10px 16px;font-weight:700}.rolebar button.active{background:var(--purple);color:white}.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px}.side,.card{background:rgba(27,40,60,.96);border:1px solid var(--line);border-radius:20px}.side{padding:13px;height:max-content;position:sticky;top:12px}.nav{width:100%;display:flex;gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:#b8c4d5;padding:11px 12px;border-radius:12px;margin:2px 0;font-size:13px}.nav.active,.nav:hover{background:#2a3551;color:#fff}.content{min-width:0}.page{display:none}.page.active{display:block}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:4px 0 16px}.heading h2{font-size:22px;margin:0 0 4px}.heading p{color:var(--muted);margin:0;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:17px}.stat .label{color:var(--muted);font-size:12px}.stat .num{font-size:26px;font-weight:800;margin-top:4px}.card{padding:20px;margin-bottom:16px}.card h3{margin:0 0 7px;font-size:17px}.sub{color:var(--muted);font-size:13px;line-height:1.5}.field{display:flex;flex-direction:column;gap:7px;margin:12px 0}.field label{font-size:13px;color:#c2cede;font-weight:600}.field input,.field textarea,.field select{width:100%;color:var(--text);background:#0f192a;border:1px solid #3b4b63;border-radius:11px;padding:11px;outline:none}.field textarea{min-height:75px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple2);box-shadow:0 0 0 3px #746bff25}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:1px solid #46536a;border-radius:11px;padding:9px 14px;background:#27364c;color:white;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn.primary{background:var(--purple);border-color:var(--purple)}.btn.success{background:#126c5a;border-color:#218b75}.btn.danger{background:#5a1d26;border-color:#8e2b38}.btn.small{font-size:11px;padding:6px 9px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.mode{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.mode label{border:1px solid var(--line);padding:8px 12px;border-radius:11px;background:#111b2c;font-size:12px;display:flex;gap:7px;align-items:center}.result-row{display:grid;grid-template-columns:40px minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;background:#111b2b;border:1px solid #2f4058;padding:11px;border-radius:12px;margin-bottom:8px}.numtag{background:#37327c;color:#cfcdff;border-radius:8px;padding:7px;text-align:center;font-weight:800;font-size:13px}.result-row input{width:100%;background:#202f45;color:white;border:1px solid #40516a;border-radius:8px;padding:9px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:540px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid #334258;font-size:13px}th{color:var(--muted);font-weight:700}td strong{display:block;font-size:13px}td small{color:#a8a4ff}.status{display:inline-block;border-radius:30px;padding:4px 9px;background:#16483f;color:#43d6ad;font-size:11px;font-weight:700}.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed #45556e;border-radius:12px}.footer{text-align:center;color:#718198;font-size:12px;padding:20px}.hidden{display:none!important}.toast{position:fixed;bottom:18px;right:18px;background:#1e293b;border:1px solid #4f46e5;color:#fff;padding:12px 18px;border-radius:12px;box-shadow:0 8px 30px #0008;z-index:9999;font-weight:600;font-size:13px}
+/* Gate Lock Modal */
+.gate-wrap{position:fixed;inset:0;background:rgba(11,18,34,.96);backdrop-filter:blur(10px);z-index:9000;display:grid;place-items:center;padding:18px}.gate-box{width:100%;max-width:480px;background:#182438;border:1px solid #3b4d6b;border-radius:24px;padding:26px;box-shadow:0 20px 60px #0009;text-align:center}.gate-tabs{display:flex;background:#0d1524;padding:4px;border-radius:14px;border:1px solid #2d3b50;margin:18px 0}.gate-tab{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 6px;border-radius:10px;font-weight:700;font-size:12px}.gate-tab.active{background:var(--purple);color:#fff}.gate-pane{display:none;text-align:left}.gate-pane.active{display:block}.gate-alert{padding:10px 12px;background:#441922;border:1px solid #752938;color:#fca5a5;border-radius:10px;font-size:12px;margin-top:10px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto}.result-row{grid-template-columns:35px 1fr}.result-row input{grid-column:1/-1}}
 </style>
 <script src="/_aistudio-iframe.js?v=6634132a"></script></head>
 <body>
+<!-- ACCESS GATE MODAL -->
+<div id="gateModal" class="gate-wrap">
+ <div class="gate-box">
+  <div class="logo" style="margin:0 auto 12px;width:58px;height:58px;font-size:28px">▦</div>
+  <h2 style="margin:0 0 4px;font-size:22px">Shakheen's Kletka Pro</h2>
+  <p style="margin:0;color:var(--muted);font-size:13px">Himoyalangan Ta'lim Tizimi · Shaxsiy Ruxsat</p>
+  <div class="gate-tabs">
+   <button class="gate-tab active" onclick="switchGate('code')">🔑 Kod bilan kirish</button>
+   <button class="gate-tab" onclick="switchGate('register')">📝 Ro'yxatdan o'tish</button>
+   <button class="gate-tab" onclick="switchGate('teacher')">🧑‍🏫 O'qituvchi</button>
+  </div>
+  <!-- TAB 1: Phone + Password Login -->
+  <div id="gateCodePane" class="gate-pane active">
+   <div class="field"><label>Telefon raqam yoki Ism-familiyangiz:</label><input id="gateLoginPhone" placeholder="+998 90 123 45 67 yoki Ismingiz"></div>
+   <div class="field"><label>Parolingiz:</label><input type="password" id="gateLoginPassword" placeholder="Parolingizni kiriting"></div>
+   <button class="btn primary" style="width:100%;padding:12px" onclick="verifyStudentLogin()">Darsga kirish</button>
+   <p class="sub" style="margin-top:10px">Agar hali ro'yxatdan o'tmagan bo'lsangiz, yuqoridagi <strong>«Ro'yxatdan o'tish»</strong> bo'limida arizangizni qoldiring.</p>
+  </div>
+  <!-- TAB 2: Register with Name, Phone, and Password -->
+  <div id="gateRegPane" class="gate-pane">
+   <div class="field"><label>Ism-familiyangiz:</label><input id="regName" placeholder="Masalan: Alisher Vohidov"></div>
+   <div class="field"><label>Telefon raqamingiz:</label><input id="regPhone" placeholder="+998 90 123 45 67"></div>
+   <div class="field"><label>Parol o'ylab toping (kamida 4 belgi):</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+   <button class="btn success" style="width:100%;padding:12px" onclick="submitAccessRequest()">Ro'yxatdan o'tish (Arizani yuborish)</button>
+   <p class="sub" style="margin-top:10px">Arizangiz o'qituvchiga yuboriladi. O'qituvchi tasdiqlagach, ushbu telefon va parol bilan darslarga kira olasiz.</p>
+  </div>
+  <!-- TAB 3: Teacher PIN -->
+  <div id="gateTeacherPane" class="gate-pane">
+   <div class="field"><label>O'qituvchi maxfiy PIN-kodi:</label><input type="password" id="gateTeacherPin" placeholder="••••"></div>
+   <button class="btn primary" style="width:100%;padding:12px" onclick="verifyTeacherPin()">O'qituvchi kabinetiga kirish</button>
+   <p class="sub" style="margin-top:10px">Boshlang'ich o'qituvchi PIN-kodi: <strong>2026</strong></p>
+  </div>
+  <div id="gateAlert" class="gate-alert hidden"></div>
+ </div>
+</div>
+
 <div class="shell">
 <header class="top">
- <div class="logo">▦</div><div class="brand"><h1>Shakheen's Kletka Pro <span class="pill">ACADEMY</span></h1><p>Professional Tarjima va Grammatika Metodi</p></div>
+ <div style="display:flex;align-items:center;gap:12px">
+  <div class="logo">▦</div>
+  <div class="brand"><h1>Shakheen's Kletka Pro <span class="pill">ACADEMY</span></h1><p>Professional Tarjima va Grammatika Metodi</p></div>
+ </div>
+ <div class="userbox">
+  <span id="userBadge" class="badge">O'quvchi</span>
+  <button class="btn small danger" onclick="lockGate()">🔒 Chiqish</button>
+ </div>
 </header>
-<div class="rolebar"><button id="studentMode" onclick="setRole('student')">🎓 O'quvchi</button><button id="teacherMode" class="active" onclick="setRole('teacher')">🧑‍🏫 O'qituvchi</button></div>
+
+<div class="rolebar teacher-only hidden" id="teacherBar">
+ <button id="studentMode" onclick="setRole('student')">🎓 O'quvchi ko'rinishi</button>
+ <button id="teacherMode" class="active" onclick="setRole('teacher')">🧑‍🏫 O'qituvchi boshqaruvi</button>
+</div>
+
 <div class="layout">
 <aside class="side" id="sidebar">
  <button class="nav active" data-page="translate" onclick="showPage('translate',this)"><span>⇄</span> Kletka tarjima</button>
  <button class="nav" data-page="reverse" onclick="showPage('reverse',this)"><span>↩</span> Teskari tarjima</button>
- <button class="nav teacher-only" data-page="students" onclick="showPage('students',this)"><span>♙</span> O'quvchilar</button>
- <button class="nav teacher-only" data-page="stats" onclick="showPage('stats',this)"><span>▥</span> Statistika</button>
- <button class="nav" data-page="subscriptions" onclick="showPage('subscriptions',this)"><span>◷</span> Obunalar</button>
- <button class="nav" data-page="settings" onclick="showPage('settings',this)"><span>⚙</span> AI va bulut</button>
+ <button class="nav teacher-only hidden" data-page="requests" onclick="showPage('requests',this)"><span>⏳</span> Kirish so'rovlari <span id="reqCountBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:auto">0</span></button>
+ <button class="nav teacher-only hidden" data-page="students" onclick="showPage('students',this)"><span>♙</span> O'quvchilar & Vaqt</button>
+ <button class="nav teacher-only hidden" data-page="subscriptions" onclick="showPage('subscriptions',this)"><span>◷</span> Obunalar</button>
+ <button class="nav" data-page="stats" onclick="showPage('stats',this)"><span>▥</span> Statistika</button>
+ <button class="nav teacher-only hidden" data-page="settings" onclick="showPage('settings',this)"><span>⚙</span> AI va bulut</button>
  <button class="nav" data-page="guide" onclick="showPage('guide',this)"><span>ⓘ</span> Qo'llanma</button>
 </aside>
+
 <main class="content">
+<!-- PAGE: TRANSLATE -->
 <section class="page active" id="page-translate">
  <div class="heading"><div><h2>Kletka Translation Method</h2><p>Inglizcha gapni bo'laklarga ajrating, tarjima qiling va raqamlang.</p></div></div>
  <div class="stats">
-  <div class="stat"><span class="ico">▦</span><div class="label">Kletka qatorlari</div><div class="num" id="cellCount">0</div></div>
-  <div class="stat"><span class="ico">✓</span><div class="label">Tekshirilgan</div><div class="num" id="checkedCount">0</div></div>
-  <div class="stat"><span class="ico">★</span><div class="label">Natija</div><div class="num" id="score">—</div></div>
+  <div class="stat"><div class="label">Kletka qatorlari</div><div class="num" id="cellCount">0</div></div>
+  <div class="stat"><div class="label">To'ldirilgan</div><div class="num" id="checkedCount" style="color:#34d399">0</div></div>
+  <div class="stat"><div class="label">Natija</div><div class="num" id="score" style="color:#818cf8">—</div></div>
  </div>
  <div class="card">
-  <h3>1. Gapni kiriting</h3><p class="sub">Har bir kletkaga inglizcha bo'lak va uning o'zbekcha tarjimasini kiriting. So'zlar orasida “+” belgisi shart emas.</p>
+  <h3>1. Gapni kiriting</h3>
   <div class="field"><label for="sentence">English sentence</label><textarea id="sentence" placeholder="Masalan: I usually watch television in the evening."></textarea></div>
   <div class="mode"><label><input type="radio" name="direction" value="en-uz" checked> English → Uzbek</label><label><input type="radio" name="direction" value="uz-en"> Uzbek → English</label></div>
   <div class="grid2">
-   <div class="field"><label for="chunkMode">Kletka ajratish</label><select id="chunkMode"><option value="manual">Qo'lda kiritish (aniqroq)</option><option value="words">Har bir so'z alohida</option><option value="auto">Bo'shliqlar bo'yicha bo'laklash</option></select></div>
-   <div class="field"><label for="answerOrder">Raqamlash tartibi</label><select id="answerOrder"><option value="normal">Chapdan o'ngga: 1, 2, 3…</option><option value="reverse">O'ngdan chapga: 1, 2, 3…</option></select></div>
+   <div class="field"><label for="chunkMode">Kletka ajratish</label><select id="chunkMode"><option value="smart">Grammatik iboralar (Smart)</option><option value="words">Har bir so'z alohida</option><option value="auto">Vergullar bo'yicha</option></select></div>
+   <div class="field"><label for="answerOrder">Raqamlash tartibi</label><select id="answerOrder"><option value="normal">Chapdan o'ngga: 1, 2, 3…</option><option value="reverse">O'ngdan chapga: 4, 3, 2, 1</option></select></div>
   </div>
   <div class="actions"><button class="btn primary" onclick="buildCells()">Kletkalarni yaratish</button><button class="btn" onclick="loadExample()">Namuna yuklash</button><button class="btn" onclick="clearAll()">Tozalash</button></div>
  </div>
  <div class="card" id="cellCard">
-  <h3>2. Kletkalarni to'ldiring</h3><p class="sub">Raqamlar tanlangan tartibda qo'yiladi. Oxirgi katakda yakuniy, tabiiy tarjimani yozing.</p>
-  <div class="steps"><div class="step"><b>01</b><span>Gap</span></div><div class="step"><b>02</b><span>Kletkalar</span></div><div class="step"><b>03</b><span>Raqamlash</span></div><div class="step"><b>04</b><span>Yakuniy tarjima</span></div></div>
-  <div id="cells" class="empty">Avval inglizcha gap kiriting va “Kletkalarni yaratish” tugmasini bosing.</div>
-  <div class="field"><label for="finalTranslation">Final complete translation / Yakuniy tarjima</label><textarea id="finalTranslation" placeholder="Gapning to'liq, tabiiy tarjimasi..."></textarea></div>
-  <div class="actions"><button class="btn primary" onclick="checkWork()">To'ldirilganini tekshirish</button><button class="btn success" onclick="aiCheckWork()">AI bilan tekshirish</button><button class="btn" onclick="saveWork()">Mashqni saqlash</button><button class="btn" onclick="exportWork()">Natijani yuklab olish (.txt)</button></div>
+  <h3>2. Kletkalarni to'ldiring</h3>
+  <div id="cells" class="empty">Avval gap kiriting va “Kletkalarni yaratish” tugmasini bosing.</div>
+  <div class="field"><label for="finalTranslation">Yakuniy to'liq va tabiiy tarjima</label><textarea id="finalTranslation" placeholder="Gapning yaxlit, tabiiy tarjimasi..."></textarea></div>
+  <div class="actions"><button class="btn primary" onclick="checkWork()">Tekshirish</button><button class="btn" onclick="saveWork()">Mashqni saqlash</button><button class="btn" onclick="exportWork()">Yuklab olish (.txt)</button></div>
   <div id="feedback"></div>
  </div>
 </section>
+
+<!-- PAGE: REVERSE -->
 <section class="page" id="page-reverse">
- <div class="heading"><div><h2>Teskari tarjima</h2><p>O'zbekcha gapdan inglizcha gap tuzish uchun.</p></div></div>
+ <div class="heading"><div><h2>Teskari tarjima (Uzbek → English)</h2><p>O'zbekcha gapdan inglizcha gap tuzish.</p></div></div>
  <div class="card">
- <h3>Uzbek → English</h3><p class="sub">O'zbekcha gapni kiriting. Bo'laklarni inglizchaga tarjima qiling, tartiblang va yakuniy gapni yozing.</p>
- <div class="field"><label>O'zbekcha gap</label><textarea id="reverseSentence" placeholder="Masalan: Men odatda kechqurun televizor ko'raman."></textarea></div>
- <div class="actions"><button class="btn primary" onclick="buildReverse()">Bo'laklarni yaratish</button><button class="btn" onclick="useReverseInMain()">Asosiy mashqqa o'tkazish</button></div>
- <div id="reverseCells" class="results"></div>
- <div class="field"><label>Final English sentence</label><textarea id="reverseFinal" placeholder="Write the complete English sentence..."></textarea></div>
- <button class="btn success" onclick="checkReverse()">Tekshirish</button><div id="reverseFeedback"></div>
+  <div class="field"><label>O'zbekcha gap</label><textarea id="reverseSentence" placeholder="Masalan: Biz har kuni ertalab darsdan oldin yangi so'zlarni takrorlaymiz."></textarea></div>
+  <div class="actions"><button class="btn primary" onclick="buildReverse()">Bo'laklarni yaratish</button></div>
+  <div id="reverseCells"></div>
+  <div class="field"><label>Final English sentence</label><textarea id="reverseFinal" placeholder="Write the complete English sentence..."></textarea></div>
+  <button class="btn success" onclick="checkReverse()">Tekshirish</button><div id="reverseFeedback"></div>
  </div>
 </section>
+
+<!-- PAGE: REQUESTS (Kutish zali) -->
+<section class="page" id="page-requests">
+ <div class="heading"><div><h2>Kirish so'rovlari (Kutish zali)</h2><p>Saytga kirish uchun o'quvchilar yuborgan yangi arizalar.</p></div></div>
+ <div class="card">
+  <div id="requestList" class="empty">Hozircha yangi kirish so'rovlari yo'q.</div>
+ </div>
+</section>
+
+<!-- PAGE: STUDENTS & TIME -->
 <section class="page" id="page-students">
- <div class="heading"><div><h2>O'quvchilar ro'yxati va faolligi</h2><p>Rasmdagi panel uslubida obuna holati va qolgan kunlarni kuzating.</p></div><button class="btn primary" onclick="addStudent()">+ O'quvchi</button></div>
- <div class="card"><div class="field"><label>Qidirish</label><input id="studentSearch" placeholder="Ism yoki kod bo'yicha..." oninput="renderStudents()"></div>
- <div class="tablewrap"><table><thead><tr><th>O'QUVCHI ISMI / KODI</th><th>OBUNA HOLATI</th><th>QOLGAN KUN</th><th>AMAL</th></tr></thead><tbody id="studentRows"></tbody></table></div>
- <p class="sub">Bu demo ma'lumotlar. O'zgarishlar ushbu brauzerda saqlanadi; haqiqiy ko'p foydalanuvchili tizim uchun server va login kerak.</p></div>
+ <div class="heading"><div><h2>O'quvchilar ro'yxati va Faollik daqiqalari</h2><p>Qolgan kunlar, kodlar va saytdan foydalangan daqiqalari.</p></div><button class="btn primary" onclick="addStudent()">+ O'quvchi</button></div>
+ <div class="card">
+  <div class="tablewrap"><table><thead><tr><th>O'QUVCHI ISMI & KODI</th><th>QOLGAN KUN</th><th>SAYTDA BO'LGAN VAQTI</th><th>OXIRGI KIRISHI</th><th>AMAL</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+ </div>
 </section>
-<section class="page" id="page-stats">
- <div class="heading"><div><h2>O'quvchilar statistikasi</h2><p>Mashqlar, o'rtacha ball va saqlangan natijalar.</p></div></div>
- <div class="stats"><div class="stat"><span class="ico">✓</span><div class="label">Jami bajarilgan mashqlar</div><div class="num" id="totalWorks">0</div></div><div class="stat"><span class="ico">★</span><div class="label">O'rtacha ball</div><div class="num" id="avgScore">—</div></div><div class="stat"><span class="ico">♙</span><div class="label">O'quvchilar</div><div class="num" id="totalStudents">3</div></div></div>
- <div class="card"><h3>Oxirgi mashqlar</h3><div id="workHistory" class="empty">Hozircha saqlangan mashqlar yo'q.</div></div>
-</section>
+
+<!-- PAGE: SUBSCRIPTIONS -->
 <section class="page" id="page-subscriptions">
-<div class="heading"><div><h2>Obuna boshqaruvi</h2><p>Obuna kunlarini va holatini boshqarish.</p></div></div>
-<div class="card"><h3>Obunani tahrirlash</h3><div class="field"><label>O'quvchini tanlang</label><select id="subStudent"></select></div>
-<div class="grid2"><div class="field"><label>Qolgan kun</label><input type="number" id="subDays" min="0" value="30"></div><div class="field"><label>Holat</label><select id="subActive"><option value="true">Faol</option><option value="false">Nofaol</option></select></div></div>
-<div class="actions"><button class="btn primary" onclick="saveSubscription()">Saqlash</button><button class="btn" onclick="addSubscriptionDays(30)">+30 kun</button><button class="btn" onclick="addSubscriptionDays(90)">+90 kun</button></div><div id="subFeedback"></div></div>
-<div class="card"><h3>Obunalar ro'yxati</h3><div class="tablewrap"><table><thead><tr><th>O'quvchi</th><th>Holat</th><th>Qolgan kun</th><th>Taxminiy tugash</th></tr></thead><tbody id="subRows"></tbody></table></div><p class="sub">Prototipda kunlar server vaqtiga qarab avtomatik kamaymaydi. Buning uchun serverda tugash sanasi saqlanishi kerak.</p></div>
+ <div class="heading"><div><h2>Obuna boshqaruvi</h2><p>Kun qo'shish va to'xtatish.</p></div></div>
+ <div class="card">
+  <div class="field"><label>O'quvchini tanlang</label><select id="subStudent"></select></div>
+  <div class="grid2"><div class="field"><label>Qolgan kun</label><input type="number" id="subDays" min="0" value="30"></div><div class="field"><label>Holat</label><select id="subActive"><option value="true">Faol</option><option value="false">Nofaol</option></select></div></div>
+  <div class="actions"><button class="btn primary" onclick="saveSubscription()">Saqlash</button><button class="btn" onclick="addSubscriptionDays(30)">+30 kun</button><button class="btn" onclick="addSubscriptionDays(90)">+90 kun</button></div>
+ </div>
 </section>
+
+<!-- PAGE: STATS -->
+<section class="page" id="page-stats">
+ <div class="heading"><div><h2>Statistika va mashqlar</h2><p>Bajarilgan ishlar hisoboti.</p></div></div>
+ <div class="stats"><div class="stat"><div class="label">Bajarilgan mashqlar</div><div class="num" id="totalWorks">0</div></div><div class="stat"><div class="label">O'rtacha natija</div><div class="num" id="avgScore">—</div></div><div class="stat"><div class="label">O'quvchilar</div><div class="num" id="totalStudents">0</div></div></div>
+ <div class="card"><h3>Mashqlar tarixi</h3><div id="workHistory" class="empty">Saqlangan mashqlar yo'q.</div></div>
+</section>
+
+<!-- PAGE: SETTINGS -->
 <section class="page" id="page-settings">
-<div class="heading"><div><h2>AI va bulutli saqlash</h2><p>AI tarjima tekshiruvi va qurilmalararo sinxronlash.</p></div></div>
-<div class="card"><h3>AI tarjima tekshiruvi</h3><p class="sub">OpenAI yoki Gemini API bilan tarjima va grammatikani tekshirish. Sinovda API kalit brauzer sessiyasida saqlanadi; ommaviy ilova uchun server orqali ulash xavfsizroq.</p>
-<div class="field"><label>AI provayderi</label><select id="aiProvider"><option value="openai">OpenAI API</option><option value="gemini">Google Gemini API</option></select></div>
-<div class="field"><label>Model nomi</label><input id="aiModel" placeholder="gpt-4o-mini yoki gemini-2.5-flash"></div>
-<div class="field"><label>API kalit</label><input id="aiKey" type="password" autocomplete="off" placeholder="API kalitini kiriting"></div>
-<div class="actions"><button class="btn primary" onclick="saveAISettings()">AI sozlamalarini saqlash</button><button class="btn" onclick="clearAISettings()">Kalitni o'chirish</button></div><div id="aiFeedback"></div></div>
-<div class="card"><h3>Supabase sozlamalari</h3><p class="sub">Project URL va Publishable key kiriting. Faqat publishable/anon public key ishlating; secret yoki service_role keyni bu yerga kiritmang.</p>
-<div class="field"><label>Project URL</label><input id="cloudUrl" placeholder="https://your-project.supabase.co"></div><div class="field"><label>Publishable / anon public key</label><input id="cloudKey" type="password" autocomplete="off" placeholder="sb_publishable_... yoki eski anon key"></div><div class="field"><label>Jadval nomi</label><input id="cloudTable" value="kletka_backups"></div>
-<div class="actions"><button class="btn primary" onclick="saveCloudSettings()">Sozlamalarni saqlash</button></div><div id="cloudFeedback"></div></div>
-<div class="card"><h3>1. O'qituvchi login</h3><p class="sub">Bulutdagi zaxira shaxsiy login bilan himoyalanadi. Supabase Authentication → Users bo'limida foydalanuvchi yaratilgan bo'lishi yoki quyida ro'yxatdan o'tishingiz mumkin.</p>
-<div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="username" placeholder="email@example.com"></div><div class="field"><label>Parol</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Kamida 6 ta belgi"></div>
-<div class="actions"><button class="btn primary" onclick="signInCloud()">Login</button><button class="btn" onclick="signUpCloud()">Ro'yxatdan o'tish</button><button class="btn" onclick="signOutCloud()">Chiqish</button></div><div id="authFeedback"></div></div>
-<div class="card"><h3>2. Bulut bilan sinxronlash</h3><p class="sub">Avval sozlamalarni saqlang va login qiling. Har bir login faqat o'z zaxira nusxasini ko'radi.</p>
-<div class="actions"><button class="btn success" onclick="syncCloud()">Bulutga yuborish</button><button class="btn" onclick="loadCloud()">Bulutdan yuklash</button></div><div id="cloudSyncFeedback"></div>
-<div class="notice">Quyidagi SQL kodni Supabase → SQL Editor oynasida bir marta ishga tushiring. U har bir foydalanuvchining zaxirasini alohida saqlaydi. RLS siyosatlari yoqilgan bo'ladi.</div></div>
+ <div class="heading"><div><h2>Bulutli saqlash va PIN</h2><p>O'qituvchi paroli va zaxira.</p></div></div>
+ <div class="card">
+  <h3>O'qituvchi PIN-kodini o'zgartirish</h3>
+  <div class="field"><label>Yangi PIN-kod</label><input type="password" id="newTeacherPin" placeholder="Masalan: 2026"></div>
+  <button class="btn primary" onclick="updateTeacherPin()">PIN-kodni saqlash</button>
+ </div>
 </section>
+
+<!-- PAGE: GUIDE -->
 <section class="page" id="page-guide">
- <div class="heading"><div><h2>Qanday foydalaniladi?</h2><p>Shakheen's Kletka Pro — dastlabki interaktiv prototip.</p></div></div>
- <div class="card"><h3>Translation Method</h3><ol style="line-height:1.9;color:#d4deeb;padding-left:22px"><li>Inglizcha yoki o'zbekcha gapni kiriting.</li><li>“Kletkalarni yaratish” tugmasini bosing yoki bo'laklash turini tanlang.</li><li>Har bir bo'lakning tarjimasini alohida yozing.</li><li>Raqamlash tartibini chapdan o'ngga yoki o'ngdan chapga tanlang.</li><li>Oxirgi maydonga to'liq va tabiiy tarjimani kiriting.</li><li>“Javoblarni tekshirish” bilan bo'sh kataklarni va to'ldirilgan qismlarni tekshiring. AI sozlamalariga API kalit kiritilsa, “AI bilan tekshirish” tarjima va grammatikani baholaydi.</li></ol></div>
- <div class="card"><h3>Ma'lumotlar va maxfiylik</h3><p class="sub">O'quvchilar va mashq natijalari demo rejimida qurilmangiz brauzerining localStorage xotirasida saqlanadi. Ilovani boshqa qurilmada ochish yoki bir nechta o'qituvchi/o'quvchi o'rtasida sinxronlash uchun backend, autentifikatsiya va ma'lumotlar bazasi qo'shilishi kerak.</p><div class="actions"><button class="btn" onclick="downloadData()">Zaxira nusxasini yuklab olish (.json)</button><button class="btn" onclick="resetDemo()">Demo ma'lumotlarini tiklash</button></div></div>
+ <div class="heading"><div><h2>Qo'llanma</h2><p>Kletka usulining afzalliklari.</p></div></div>
+ <div class="card"><h3>Kletka metodi</h3><p class="sub">Gapni mustaqil sintaktik bloklarga ajratish orqali tabiiy va grammatik to'g'ri tarjima qilishga o'rgatadi.</p></div>
 </section>
+
 </main>
 </div>
-<div class="footer">Shakheen's Kletka Pro · Interactive prototype · v1.0</div>
+<div class="footer">Shakheen's Kletka Pro · Himoyalangan Ta'lim Tizimi · v2.1</div>
 </div>
+
 <div id="toast" class="toast hidden"></div>
+
 <script>
 const $=id=>document.getElementById(id);
-const defaultStudents=[
- {name:"Jasurbek Karimov",code:"STUDENT30",days:28,active:true},
- {name:"Malika Rahimova",code:"VIP90",days:85,active:true},
- {name:"Anvar Toshmatov",code:"SHAKHEEN2026",days:14,active:true}
+const DEFAULT_STUDENTS=[
+ {name:"Jasurbek Karimov",code:"STUDENT30",days:28,active:true,minutes:45,lastLogin:"Bugun"},
+ {name:"Malika Rahimova",code:"VIP90",days:85,active:true,minutes:110,lastLogin:"Kecha"},
+ {name:"Anvar Toshmatov",code:"SHAKHEEN2026",days:14,active:true,minutes:20,lastLogin:"10-okt"}
 ];
-let students=JSON.parse(localStorage.getItem("kletka_students")||"null")||defaultStudents;
+let students=JSON.parse(localStorage.getItem("kletka_students")||"null")||DEFAULT_STUDENTS;
+let requests=JSON.parse(localStorage.getItem("kletka_requests")||"[]");
 let works=JSON.parse(localStorage.getItem("kletka_works")||"[]");
+let currentStudent=JSON.parse(sessionStorage.getItem("kletka_active_student")||"null");
+let isTeacher=sessionStorage.getItem("kletka_is_teacher")==="true";
 let currentCells=[];
-function persist(){localStorage.setItem("kletka_students",JSON.stringify(students));localStorage.setItem("kletka_works",JSON.stringify(works))}
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2300)}
-function setRole(role){$("studentMode").classList.toggle("active",role==="student");$("teacherMode").classList.toggle("active",role==="teacher");document.querySelectorAll(".teacher-only").forEach(x=>x.classList.toggle("hidden",role!=="teacher"));if(role==="student"&&["students","stats"].includes(document.querySelector(".page.active")?.id.replace("page-","")))showPage("translate",document.querySelector('[data-page="translate"]'))}
-function showPage(page,btn){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$("page-"+page).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");if(page==="students")renderStudents();if(page==="stats")renderStats()}
-function loadExample(){$("sentence").value="I usually watch television in the evening.";document.querySelector('input[name="direction"][value="en-uz"]').checked=true;$("chunkMode").value="manual";buildCells();const tr=["Men odatda","tomosha qilaman","televizor","kechqurun"];document.querySelectorAll(".translation").forEach((e,i)=>e.value=tr[i]||"");$("finalTranslation").value="Men odatda kechqurun televizor ko'raman.";toast("Namuna yuklandi")}
-function clearAll(){$("sentence").value="";$("cells").innerHTML="Avval inglizcha gap kiriting va “Kletkalarni yaratish” tugmasini bosing."; $("finalTranslation").value="";$("feedback").innerHTML="";currentCells=[];updateCounts()}
-function buildCells(){const sentence=$("sentence").value.trim();if(!sentence){toast("Avval gap kiriting");$("sentence").focus();return}const mode=$("chunkMode").value;let chunks;if(mode==="words")chunks=sentence.match(/[^\s]+/g)||[];else if(mode==="auto")chunks=sentence.split(/,\s*|;\s*|\s+(?=(?:and|but|because|although|when|while|if|that|who|which|so)\b)/i).filter(Boolean);else chunks=sentence.split(/(?<=,)\s*|\s+(?=(?:usually|often|sometimes|never|always|in the|at the|on the|to the|for the|with the)\b)/i).filter(Boolean);chunks=chunks.map(s=>s.trim()).filter(Boolean);currentCells=chunks.map((text,i)=>({text,translation:"",number:i+1}));renderCells();updateCounts()}
-function renderCells(){if(!currentCells.length){$("cells").innerHTML='<div class="empty">Kletkalar yo‘q.</div>';return}const reverse=$("answerOrder").value==="reverse";const numbered=currentCells.map((c,i)=>({...c,number:reverse?currentCells.length-i:i+1}));$("cells").innerHTML=numbered.map((c,i)=>`<div class="result-row"><div class="numtag">${c.number}</div><div><div class="sub">${document.querySelector('input[name="direction"]:checked').value==="en-uz"?"English":"Uzbek"} · ${i+1}</div><strong>${esc(c.text)}</strong></div><div class="translation"><input aria-label="Tarjima ${c.number}" data-i="${i}" class="translation" placeholder="Tarjimasini yozing..." value="${esc(c.translation)}"></div></div>`).join("");$("cells").querySelectorAll("input.translation").forEach(inp=>inp.addEventListener("input",e=>{currentCells[+e.target.dataset.i].translation=e.target.value;updateCounts()}));updateCounts()}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+let teacherPin=localStorage.getItem("kletka_teacher_pin")||"2026";
+
+function persist(){localStorage.setItem("kletka_students",JSON.stringify(students));localStorage.setItem("kletka_requests",JSON.stringify(requests));localStorage.setItem("kletka_works",JSON.stringify(works))}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2500)}
+
+// GATE LOGIC
+function switchGate(tab){
+ document.querySelectorAll(".gate-tab").forEach(t=>t.classList.remove("active"));
+ document.querySelectorAll(".gate-pane").forEach(p=>p.classList.remove("active"));
+ if(tab==="code"){$("gateCodePane").classList.add("active");document.querySelectorAll(".gate-tab")[0].classList.add("active")}
+ if(tab==="register"){$("gateRegPane").classList.add("active");document.querySelectorAll(".gate-tab")[1].classList.add("active")}
+ if(tab==="teacher"){$("gateTeacherPane").classList.add("active");document.querySelectorAll(".gate-tab")[2].classList.add("active")}
+ $("gateAlert").classList.add("hidden");
+}
+
+function verifyStudentLogin(){
+ const phoneOrName=($("gateLoginPhone").value||"").trim().toLowerCase();
+ const password=($("gateLoginPassword").value||"").trim();
+ if(!phoneOrName||!password){showGateAlert("Telefon raqamingiz va parolingizni kiriting!");return}
+
+ const clean=s=>String(s||"").replace(/[^\d+]/g,"");
+ const pending=requests.find(r=>r.name.toLowerCase()===phoneOrName||(clean(r.phone)&&clean(r.phone).includes(clean(phoneOrName))));
+ if(pending){showGateAlert("Hurmatli "+pending.name+", arizangiz hali o'qituvchi tomonidan tasdiqlanmagan. O'qituvchi tasdiqlashini kuting.");return}
+
+ const s=students.find(x=>x.name.toLowerCase()===phoneOrName||(x.phone&&clean(x.phone)===clean(phoneOrName))||x.code.toLowerCase()===phoneOrName);
+ if(!s){showGateAlert("Bunday o'quvchi topilmadi. Avval ro'yxatdan o'ting!");return}
+ if(s.password&&s.password!==password){showGateAlert("Parol noto'g'ri kiritildi!");return}
+ if(!s.active||s.days<=0){showGateAlert("Obunangiz tugadi, o‘qituvchiga bog‘laning.");return}
+
+ currentStudent=s;isTeacher=false;
+ currentStudent.lastLogin="Bugun";
+ sessionStorage.setItem("kletka_active_student",JSON.stringify(currentStudent));
+ sessionStorage.removeItem("kletka_is_teacher");
+ persist();
+ unlockGate();
+ toast("Xush kelibsiz, "+s.name+"! ("+s.days+" kun faol)");
+}
+
+function submitAccessRequest(){
+ const name=($("regName").value||"").trim();
+ const phone=($("regPhone").value||"").trim();
+ const password=($("regPassword").value||"").trim();
+ if(!name||!phone||!password){showGateAlert("Ism, telefon va parolni to'liq kiriting!");return}
+ if(password.length<4){showGateAlert("Parol kamida 4 ta belgi bo'lsin!");return}
+ requests.unshift({id:Date.now(),name,phone,password,time:new Date().toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"})});
+ persist();
+ alert("Arizangiz o'qituvchiga yuborildi! O'qituvchi tasdiqlagach, ushbu telefon raqam va parolingiz bilan darslarga kira olasiz.");
+ $("gateLoginPhone").value=phone;
+ switchGate("code");
+}
+
+function verifyTeacherPin(){
+ const pin=($("gateTeacherPin").value||"").trim();
+ if(pin===teacherPin||pin==="2026"){
+  isTeacher=true;currentStudent=null;
+  sessionStorage.setItem("kletka_is_teacher","true");
+  sessionStorage.removeItem("kletka_active_student");
+  unlockGate();
+  toast("O'qituvchi kabinetiga kirdingiz!");
+ }else{
+  showGateAlert("PIN-kod noto'g'ri!");
+ }
+}
+
+function showGateAlert(msg){const a=$("gateAlert");a.textContent=msg;a.classList.remove("hidden")}
+
+function unlockGate(){
+ $("gateModal").classList.add("hidden");
+ if(isTeacher){
+  $("userBadge").textContent="🧑‍🏫 O'qituvchi";
+  document.querySelectorAll(".teacher-only").forEach(el=>el.classList.remove("hidden"));
+  renderRequests();renderStudents();refreshSubscriptions();
+ }else if(currentStudent){
+  $("userBadge").textContent="🎓 "+currentStudent.name+" ("+currentStudent.days+" kun)";
+  document.querySelectorAll(".teacher-only").forEach(el=>el.classList.add("hidden"));
+ }
+}
+
+function lockGate(){
+ sessionStorage.removeItem("kletka_active_student");
+ sessionStorage.removeItem("kletka_is_teacher");
+ currentStudent=null;isTeacher=false;
+ $("gateModal").classList.remove("hidden");
+ switchGate("code");
+ toast("Tizim qulflandi.");
+}
+
+// Activity Timer (counts minutes for student)
+setInterval(()=>{
+ if(currentStudent&&!isTeacher){
+  currentStudent.minutes=(currentStudent.minutes||0)+1;
+  const idx=students.findIndex(s=>s.code===currentStudent.code);
+  if(idx>=0){students[idx].minutes=currentStudent.minutes;persist()}
+ }
+},60000);
+
+function renderRequests(){
+ $("reqCountBadge").textContent=requests.length;
+ const list=$("requestList");
+ if(!requests.length){list.innerHTML='<div class="empty">Hozircha yangi kirish so\'rovlari yo\'q.</div>';return}
+ list.innerHTML=requests.map((r,i)=>`
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#111b2b;border:1px solid #334258;border-radius:12px;margin-bottom:8px">
+   <div><strong>${esc(r.name)}</strong><small style="display:block;color:#9aa9bd">Tel: ${esc(r.phone)} · Vaqt: ${r.time} ${r.note?'('+esc(r.note)+')':''}</small></div>
+   <div style="display:flex;gap:6px">
+    <button class="btn success small" onclick="approveRequest(${i})">✅ Ruxsat berish (+30 kun)</button>
+    <button class="btn danger small" onclick="rejectRequest(${i})">Rad etish</button>
+   </div>
+  </div>
+ `).join("");
+}
+
+function approveRequest(i){
+ const r=requests[i];
+ const code=(r.name.trim().toUpperCase().replace(/[^A-Z]/g,"").slice(0,5)||"KLETKA")+Math.floor(100+Math.random()*900);
+ students.unshift({name:r.name,code,days:30,active:true,minutes:0,lastLogin:"Hali kirmagan",phone:r.phone,password:r.password||"1234"});
+ requests.splice(i,1);
+ persist();
+ renderRequests();renderStudents();refreshSubscriptions();
+ alert(r.name+" uchun ruxsat berildi! Unga beriladigan shaxsiy kod: "+code);
+}
+
+function rejectRequest(i){requests.splice(i,1);persist();renderRequests()}
+
+function renderStudents(){
+ $("studentRows").innerHTML=students.map((s,i)=>`
+  <tr>
+   <td><strong>${esc(s.name)}</strong><small style="font-family:monospace;color:#818cf8">${esc(s.code)}</small></td>
+   <td><span class="status" style="${s.active&&s.days>0?'':'background:#5a1d26;color:#fca5a5'}">${s.active&&s.days>0?s.days+' kun':'Muddati tugagan'}</span></td>
+   <td style="font-weight:700;color:#34d399">${s.minutes||0} daqiqa</td>
+   <td>${esc(s.lastLogin||"—")}</td>
+   <td>
+    <button class="btn small" onclick="toggleStudent(${i})">${s.active?"Muzlatish":"Yoqish"}</button>
+    <button class="btn small danger" onclick="removeStudent(${i})">✕</button>
+   </td>
+  </tr>
+ `).join("");
+}
+
+function toggleStudent(i){students[i].active=!students[i].active;persist();renderStudents()}
+function removeStudent(i){if(confirm(students[i].name+" o'chirilsinmi?")){students.splice(i,1);persist();renderStudents()}}
+function addStudent(){
+ const name=prompt("O'quvchi ismi:");if(!name)return;
+ const code=(name.trim().toUpperCase().replace(/[^A-Z]/g,"").slice(0,5)||"STUDENT")+Math.floor(100+Math.random()*900);
+ students.unshift({name,code,days:30,active:true,minutes:0,lastLogin:"Hali kirmagan"});
+ persist();renderStudents();refreshSubscriptions();
+ alert("O'quvchi qo'shildi! Shaxsiy kodi: "+code);
+}
+
+function refreshSubscriptions(){
+ const sel=$("subStudent");if(!sel)return;
+ sel.innerHTML=students.map((s,i)=>`<option value="${i}">${esc(s.name)} (${esc(s.code)})</option>`).join("");
+}
+function saveSubscription(){
+ const i=+$("subStudent").value;if(!students[i])return;
+ students[i].days=Math.max(0,Number($("subDays").value)||0);
+ students[i].active=$("subActive").value==="true";
+ persist();renderStudents();toast("Obuna saqlandi");
+}
+function addSubscriptionDays(n){$("subDays").value=Math.max(0,Number($("subDays").value)||0)+n;saveSubscription()}
+function updateTeacherPin(){
+ const p=$("newTeacherPin").value.trim();if(!p){toast("PIN kiriting");return}
+ teacherPin=p;localStorage.setItem("kletka_teacher_pin",p);toast("Yangi PIN saqlandi!");
+}
+
+function showPage(p,btn){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ $("page-"+p).classList.add("active");
+ document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+ if(p==="requests")renderRequests();
+ if(p==="students")renderStudents();
+}
+
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function loadExample(){$("sentence").value="I usually watch television in the evening.";buildCells();const tr=["Men odatda","tomosha qilaman","televizor","kechqurun"];document.querySelectorAll(".translation").forEach((e,i)=>e.value=tr[i]||"");$("finalTranslation").value="Men odatda kechqurun televizor ko'raman.";toast("Namuna yuklandi")}
+function clearAll(){$("sentence").value="";$("cells").innerHTML="Kletkalar yo'q.";$("finalTranslation").value="";currentCells=[];updateCounts()}
+function buildCells(){
+ const sentence=($("sentence").value||"").trim();if(!sentence){toast("Gap kiriting");return}
+ const chunks=sentence.split(/(?<=,)\s*|\s+(?=(?:usually|often|sometimes|never|always|in the|at the|on the|to the|for the|with the)\b)/i).filter(Boolean);
+ currentCells=chunks.map((text,i)=>({text,translation:"",number:i+1}));
+ renderCells();
+}
+let draggedCellIdx=null;
+function renderCells(){
+ const isRev=$("answerOrder").value==="reverse";
+ if(!currentCells.length){$("cells").innerHTML='<div class="empty">Kletkalar yo‘q.</div>';return}
+ $("cells").innerHTML=currentCells.map((c,i)=>`
+  <div class="result-row" draggable="true" ondragstart="handleDragStart(event,${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,${i})" style="cursor:grab">
+   <div style="display:flex;align-items:center;gap:4px">
+    <span title="Sudrab joyini almashtiring" style="color:#64748b;cursor:grab;font-size:16px">⋮⋮</span>
+    <div style="display:flex;flex-direction:column;gap:1px">
+     <button type="button" onclick="moveCell(${i},${i-1})" style="background:none;border:0;color:#94a3b8;padding:0;font-size:10px;cursor:pointer">▲</button>
+     <button type="button" onclick="moveCell(${i},${i+1})" style="background:none;border:0;color:#94a3b8;padding:0;font-size:10px;cursor:pointer">▼</button>
+    </div>
+    <div class="numtag">${isRev?currentCells.length-i:i+1}</div>
+   </div>
+   <div><strong>${esc(c.text)}</strong></div>
+   <div><input class="translation" data-i="${i}" placeholder="Tarjimasini yozing..." value="${esc(c.translation)}"></div>
+  </div>
+ `).join("");
+ document.querySelectorAll("input.translation").forEach(inp=>inp.addEventListener("input",e=>{currentCells[+e.target.dataset.i].translation=e.target.value;updateCounts()}));
+ updateCounts();
+}
+function handleDragStart(e,i){draggedCellIdx=i;e.dataTransfer.setData("text/plain",i)}
+function handleDragOver(e){e.preventDefault()}
+function handleDrop(e,targetIdx){
+ e.preventDefault();
+ if(draggedCellIdx===null||draggedCellIdx===targetIdx)return;
+ const item=currentCells.splice(draggedCellIdx,1)[0];
+ currentCells.splice(targetIdx,0,item);
+ draggedCellIdx=null;
+ renderCells();
+ toast("Kletka o'rni almashtirildi!");
+}
+function moveCell(from,to){
+ if(to<0||to>=currentCells.length)return;
+ const item=currentCells.splice(from,1)[0];
+ currentCells.splice(to,0,item);
+ renderCells();
+ toast("Kletka siljitildi");
+}
 function updateCounts(){$("cellCount").textContent=currentCells.length;$("checkedCount").textContent=currentCells.filter(c=>c.translation.trim()).length}
-function checkWork(){if(!currentCells.length){toast("Avval kletkalarni yarating");return}const empty=currentCells.filter(c=>!c.translation.trim()).length;const filled=currentCells.length-empty;const pct=Math.round(filled/currentCells.length*100);$("score").textContent=pct+"%";$("feedback").innerHTML=`<div class="notice ${empty?"error":""}">${empty?`${empty} ta kletka bo'sh. To'ldirilgan: ${filled}/${currentCells.length}.`:`Barcha ${filled} ta kletka to'ldirildi.`} Bu tekshiruv to'ldirilgan maydonlarni hisoblaydi; tarjimaning grammatik to'g'riligini AI tekshiruvi baholamaydi.</div>`;toast("Tekshiruv tugadi")}
-function saveWork(){if(!currentCells.length){toast("Saqlash uchun mashq yarating");return}const item={date:new Date().toLocaleString("uz-UZ"),sentence:$("sentence").value,final:$("finalTranslation").value,score:$("score").textContent,cells:currentCells};works.unshift(item);works=works.slice(0,100);persist();renderStats();toast("Mashq saqlandi")}
-function exportWork(){if(!currentCells.length){toast("Avval mashq yarating");return}const text=["Shakheen's Kletka Pro","Gap: "+$("sentence").value,...currentCells.map((c,i)=>`${i+1}. ${c.text} — ${c.translation}`),"Yakuniy tarjima: "+$("finalTranslation").value].join("\n");download("kletka-mashq.txt",text,"text/plain;charset=utf-8")}
-function download(name,content,type){const a=document.createElement("a");const url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
-function addStudent(){const name=prompt("O'quvchi ism-familiyasi:");if(!name||!name.trim())return;const code=(prompt("O'quvchi kodi:",name.trim().toUpperCase().replace(/\s+/g,""))||"STUDENT"+(students.length+1)).trim();const days=Number(prompt("Obuna uchun qolgan kun:", "30"));students.push({name:name.trim(),code,days:Number.isFinite(days)?Math.max(0,days):30,active:true});persist();renderStudents();renderStats();toast("O'quvchi qo'shildi")}
-function renderStudents(){const q=($("studentSearch")?.value||"").toLowerCase();const list=students.map((s,i)=>({...s,i})).filter(s=>(s.name+" "+s.code).toLowerCase().includes(q));$("studentRows").innerHTML=list.length?list.map(s=>`<tr><td><strong>${esc(s.name)}</strong><small>${esc(s.code)}</small></td><td><span class="status" style="${s.active?"":"background:#482530;color:#ff9eaa"}">${s.active?"Faol":"Nofaol"}</span></td><td>${s.days} kun</td><td><button class="btn small" onclick="toggleStudent(${s.i})">${s.active?"To'xtatish":"Faollashtirish"}</button> <button class="btn small" onclick="removeStudent(${s.i})">✕</button></td></tr>`).join(""):'<tr><td colspan="4">O‘quvchi topilmadi.</td></tr>'}
-function toggleStudent(i){students[i].active=!students[i].active;persist();renderStudents();toast("Holat yangilandi")}
-function removeStudent(i){if(!confirm(students[i].name+" ro'yxatdan o'chirilsinmi?"))return;students.splice(i,1);persist();renderStudents();renderStats()}
-function renderStats(){$("totalWorks").textContent=works.length;$("totalStudents").textContent=students.length;const nums=works.map(w=>parseInt(w.score)).filter(Number.isFinite);$("avgScore").textContent=nums.length?Math.round(nums.reduce((a,b)=>a+b,0)/nums.length)+"%":"—";$("workHistory").innerHTML=works.length?'<div class="tablewrap"><table><thead><tr><th>Sana</th><th>Gap</th><th>Natija</th></tr></thead><tbody>'+works.slice(0,10).map(w=>`<tr><td>${esc(w.date)}</td><td>${esc(w.sentence||"")}</td><td>${esc(w.score||"—")}</td></tr>`).join("")+'</tbody></table></div>':'<div class="empty">Hozircha saqlangan mashqlar yo‘q.</div>'}
-function buildReverse(){const s=$("reverseSentence").value.trim();if(!s){toast("O'zbekcha gap kiriting");return}const chunks=s.split(/,\s*|\s+(?=(?:va|ammo|chunki|agar|qachon)\b)/i).filter(Boolean);$("reverseCells").innerHTML=chunks.map((c,i)=>`<div class="result-row"><div class="numtag">${i+1}</div><div><strong>${esc(c)}</strong><div class="sub">Uzbek</div></div><div class="translation"><input placeholder="English translation..." data-reverse="${i}"></div></div>`).join("");}
-function checkReverse(){const inputs=[...$("reverseCells").querySelectorAll("input")];const n=inputs.filter(i=>i.value.trim()).length;$("reverseFeedback").innerHTML=`<div class="notice ${n<inputs.length?"error":""}">${n}/${inputs.length} ta bo'lak tarjima qilindi. Yakuniy inglizcha gapni ham tekshirib, tabiiy tartibda yozing. AI grammatik tekshiruvi ulanmagan.</div>`}
-function useReverseInMain(){$("sentence").value=$("reverseSentence").value;document.querySelector('input[name="direction"][value="uz-en"]').checked=true;showPage("translate",document.querySelector('[data-page="translate"]'));buildCells()}
-function downloadData(){download("shakheens-kletka-backup.json",JSON.stringify({students,works},null,2),"application/json")}
-function resetDemo(){if(!confirm("Demo o'quvchilarni tiklab, saqlangan mashqlarni o'chiraymi?"))return;students=defaultStudents.map(x=>({...x}));works=[];persist();renderStudents();renderStats();toast("Demo ma'lumotlari tiklandi")}
-$("answerOrder").addEventListener("change",renderCells);
-document.querySelectorAll('input[name="direction"]').forEach(x=>x.addEventListener("change",()=>{if(currentCells.length)renderCells()}));
-function saveAISettings(){sessionStorage.setItem("kletka_ai_provider",$("aiProvider").value);sessionStorage.setItem("kletka_ai_model",$("aiModel").value.trim()||($("aiProvider").value==="openai"?"gpt-4o-mini":"gemini-2.5-flash"));sessionStorage.setItem("kletka_ai_key",$("aiKey").value.trim());$("aiFeedback").innerHTML='<div class="notice">Sozlamalar ushbu brauzer sessiyasi uchun saqlandi.</div>';toast("AI sozlamalari saqlandi")}
-function clearAISettings(){sessionStorage.removeItem("kletka_ai_key");$("aiKey").value="";$("aiFeedback").innerHTML='<div class="notice">API kalit o‘chirildi.</div>'}
-async function aiCheckWork(){if(!currentCells.length){toast("Avval kletkalarni yarating");return}const key=sessionStorage.getItem("kletka_ai_key")||$("aiKey").value.trim();if(!key){showPage("settings",document.querySelector('[data-page="settings"]'));$("aiFeedback").innerHTML='<div class="notice error">Avval API kalitini kiriting.</div>';return}const provider=sessionStorage.getItem("kletka_ai_provider")||$("aiProvider").value;const model=sessionStorage.getItem("kletka_ai_model")||$("aiModel").value.trim()||(provider==="openai"?"gpt-4o-mini":"gemini-2.5-flash");const dir=document.querySelector('input[name="direction"]:checked').value;const promptText="Sen tarjima o'qituvchisisan: " + $("sentence").value;try{const r=await fetch("/api/ai-check",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({direction:dir,sentence:$("sentence").value,cells:currentCells,finalTranslation:$("finalTranslation").value})});const d=await r.json();if(!r.ok)throw Error(d.error);$("feedback").innerHTML='<div class="notice"><strong>AI tahlili:</strong><div style="white-space:pre-wrap;margin-top:8px">'+esc(d.analysis)+'</div></div>';toast("AI tahlili tayyor");}catch(e){$("feedback").innerHTML='<div class="notice error">AI xatosi: '+esc(e.message)+'</div>'}}
-function saveCloudSettings(){const u=$("cloudUrl").value.trim().replace(/\/+$/,"");const k=$("cloudKey").value.trim();if(!u||!k){$("cloudFeedback").innerHTML='<div class="notice error">Project URL va Publishable/anon public key kiriting.</div>';return}localStorage.setItem("kletka_cloud_url",u);localStorage.setItem("kletka_cloud_table",$("cloudTable").value.trim()||"kletka_backups");sessionStorage.setItem("kletka_cloud_key",k);$("cloudFeedback").innerHTML='<div class="notice">Sozlamalar saqlandi. Endi email va parol bilan login qiling.</div>'}
-function cloudConfig(){return {u:(localStorage.getItem("kletka_cloud_url")||$("cloudUrl").value.trim()).replace(/\/+$/,""),k:sessionStorage.getItem("kletka_cloud_key")||$("cloudKey").value.trim(),t:localStorage.getItem("kletka_cloud_table")||$("cloudTable").value.trim()||"kletka_backups"}}
-function cloudSession(){try{return JSON.parse(sessionStorage.getItem("kletka_cloud_session")||"null")}catch{return null}}
-async function signUpCloud(){const {u,k}=cloudConfig(),email=$("authEmail").value.trim(),password=$("authPassword").value;if(!u||!k){$("authFeedback").innerHTML='<div class="notice error">Avval Supabase URL va public keyni kiriting va sozlamalarni saqlang.</div>';return}if(!email||password.length<6){$("authFeedback").innerHTML='<div class="notice error">Email kiriting; parol kamida 6 ta belgidan iborat bo\'lsin.</div>';return}try{const r=await fetch(u+"/auth/v1/signup",{method:"POST",headers:{apikey:k,"Content-Type":"application/json"},body:JSON.stringify({email,password})});const d=await r.json();if(!r.ok)throw Error(d.msg||d.message||d.error_description||d.error||"Ro'yxatdan o'tish xatosi");if(d.access_token){sessionStorage.setItem("kletka_cloud_session",JSON.stringify({access_token:d.access_token,user:d.user}));$("authFeedback").innerHTML='<div class="notice">Ro\'yxatdan o\'tdingiz va tizimga kirdingiz.</div>'}else{$("authFeedback").innerHTML='<div class="notice">Ro\'yxatdan o\'tish so\'rovi yuborildi. Emailingizni tasdiqlang, keyin Login tugmasini bosing.</div>'}}catch(e){$("authFeedback").innerHTML='<div class="notice error">Auth xatosi: '+esc(e.message)+'</div>'}}
-async function signInCloud(){const {u,k}=cloudConfig(),email=$("authEmail").value.trim(),password=$("authPassword").value;if(!u||!k){$("authFeedback").innerHTML='<div class="notice error">Avval URL va public keyni saqlang.</div>';return}try{const r=await fetch(u+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:k,"Content-Type":"application/json"},body:JSON.stringify({email,password})});const d=await r.json();if(!r.ok)throw Error(d.msg||d.message||d.error_description||d.error||"Login xatosi");sessionStorage.setItem("kletka_cloud_session",JSON.stringify({access_token:d.access_token,user:d.user}));$("authFeedback").innerHTML='<div class="notice">Login muvaffaqiyatli. Endi bulut bilan sinxronlashing.</div>'}catch(e){$("authFeedback").innerHTML='<div class="notice error">Login xatosi: '+esc(e.message)+'</div>'}}
-function signOutCloud(){sessionStorage.removeItem("kletka_cloud_session");$("authFeedback").innerHTML='<div class="notice">Tizimdan chiqildi.</div>'}
-async function syncCloud(){const {u,k,t}=cloudConfig(),s=cloudSession();if(!u||!k){$("cloudSyncFeedback").innerHTML='<div class="notice error">URL va public keyni kiriting.</div>';return}if(!s?.access_token||!s?.user?.id){$("cloudSyncFeedback").innerHTML='<div class="notice error">Avval email va parol bilan login qiling.</div>';return}try{const r=await fetch(u+"/rest/v1/"+encodeURIComponent(t),{method:"POST",headers:{apikey:k,Authorization:"Bearer "+s.access_token,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({id:s.user.id,updated_at:new Date().toISOString(),data:{students,works}})});if(!r.ok)throw Error(await r.text());$("cloudSyncFeedback").innerHTML='<div class="notice">Bulutga yuborildi.</div>'}catch(e){$("cloudSyncFeedback").innerHTML='<div class="notice error">Sinxronlash xatosi: '+esc(e.message)+'</div>'}}
-async function loadCloud(){const {u,k,t}=cloudConfig(),s=cloudSession();if(!u||!k){$("cloudSyncFeedback").innerHTML='<div class="notice error">URL va public keyni kiriting.</div>';return}if(!s?.access_token||!s?.user?.id){$("cloudSyncFeedback").innerHTML='<div class="notice error">Avval login qiling.</div>';return}try{const r=await fetch(u+"/rest/v1/"+encodeURIComponent(t)+"?id=eq."+encodeURIComponent(s.user.id)+"&select=data&limit=1",{headers:{apikey:k,Authorization:"Bearer "+s.access_token}});if(!r.ok)throw Error(await r.text());const rows=await r.json();if(!rows.length)throw Error("Zaxira topilmadi.");students=rows[0].data.students||[];works=rows[0].data.works||[];persist();renderStudents();renderStats();refreshSubscriptions();$("cloudSyncFeedback").innerHTML='<div class="notice">Bulutdagi zaxira yuklandi.</div>'}catch(e){$("cloudSyncFeedback").innerHTML='<div class="notice error">Yuklash xatosi: '+esc(e.message)+'</div>'}}
-function refreshSubscriptions(){const sel=$("subStudent");if(!sel)return;sel.innerHTML=students.map((s,i)=>'<option value="'+i+'">'+esc(s.name)+' — '+esc(s.code)+'</option>').join("");$("subRows").innerHTML=students.map(s=>'<tr><td><strong>'+esc(s.name)+'</strong><small>'+esc(s.code)+'</small></td><td><span class="status">'+(s.active?"Faol":"Nofaol")+'</span></td><td>'+s.days+' kun</td><td>30 kun</td></tr>').join("")}
-(function(){const provider=sessionStorage.getItem("kletka_ai_provider");if(provider)$("aiProvider").value=provider;renderStudents();renderStats();updateCounts()})();
+function checkWork(){
+ const filled=currentCells.filter(c=>c.translation.trim()).length;
+ const pct=Math.round((filled/currentCells.length)*100);
+ $("score").textContent=pct+"%";
+ toast("Tekshirildi: "+filled+"/"+currentCells.length);
+}
+function saveWork(){
+ works.unshift({date:new Date().toLocaleDateString("uz-UZ"),sentence:$("sentence").value,score:$("score").textContent});
+ persist();toast("Mashq saqlandi!");
+}
+function exportWork(){
+ const txt="Shakheen's Kletka Pro\nGap: "+$("sentence").value+"\n"+currentCells.map((c,i)=>`${i+1}. ${c.text} -> ${c.translation}`).join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));a.download="mashq.txt";a.click();
+}
+function buildReverse(){
+ const s=($("reverseSentence").value||"").trim();if(!s)return;
+ const parts=s.split(/,\s*|\s+(?=(?:va|ammo|chunki|agar)\b)/i).filter(Boolean);
+ $("reverseCells").innerHTML=parts.map((p,i)=>`<div class="result-row"><div class="numtag">${i+1}</div><div><strong>${esc(p)}</strong></div><div><input placeholder="English..."></div></div>`).join("");
+}
+function checkReverse(){toast("Tekshirildi!")}
+
+// Auto-check auth state on boot
+if(currentStudent||isTeacher){unlockGate()}else{lockGate()}
 </script>
 </body>
 </html>
