@@ -236,8 +236,9 @@ const DEFAULT_STUDENTS=[
 let students=JSON.parse(localStorage.getItem("kletka_students")||"null")||DEFAULT_STUDENTS;
 let requests=JSON.parse(localStorage.getItem("kletka_requests")||"[]");
 let works=JSON.parse(localStorage.getItem("kletka_works")||"[]");
-let currentStudent=JSON.parse(sessionStorage.getItem("kletka_active_student")||"null");
-let isTeacher=sessionStorage.getItem("kletka_is_teacher")==="true";
+let currentStudent=JSON.parse(localStorage.getItem("kletka_active_student")||"null");
+let isTeacher=localStorage.getItem("kletka_is_teacher")==="true";
+let mySavedAccount=JSON.parse(localStorage.getItem("kletka_my_account")||"null");
 let currentCells=[];
 let draggedCellIdx=null;
 let teacherPin=localStorage.getItem("kletka_teacher_pin")||"2026";
@@ -279,6 +280,10 @@ async function submitAccessRequest(){
  $("btnRegSubmit").textContent="Yuborilmoqda...";
  $("btnRegSubmit").disabled=true;
 
+ // Qurilmada hisob ma'lumotlarini eslab qolish (parol qayta so'ralmasligi uchun)
+ mySavedAccount = { name, phone, password };
+ localStorage.setItem("kletka_my_account", JSON.stringify(mySavedAccount));
+
  // 1. Supabase bulutiga yuborish
  const newReq = { name, phone, password, status: "pending" };
  const sbRes = await sbFetch("kletka_requests", {
@@ -300,11 +305,9 @@ async function submitAccessRequest(){
  $("btnRegSubmit").textContent="Ro'yxatdan o'tish (Arizani yuborish)";
  $("btnRegSubmit").disabled=false;
 
- alert("✅ Arizangiz qabul qilindi!\n\nO'qituvchi arizangizni tasdiqlashi bilan siz ushbu telefon raqam va parolingiz bilan darslarga kira olasiz.");
+ alert("✅ Arizangiz qabul qilindi!\n\nO'qituvchi arizangizni tasdiqlashi bilan sayt avtomatik ochiladi — har safar qayta parol kiritishingiz shart emas.");
  $("gateLoginPhone").value=phone;
- $("regName").value="";
- $("regPhone").value="";
- $("regPassword").value="";
+ $("gateLoginPassword").value=password;
  switchGate("code");
 }
 
@@ -332,7 +335,7 @@ async function verifyStudentLogin(){
    (clean(r.phone) && clean(r.phone) === clean(phoneOrName))
  );
  if(pending){
-   showGateAlert("Hurmatli "+pending.name+", arizangiz hali o'qituvchi tomonidan tasdiqlanmagan. Iltimos, o'qituvchi tasdiqlashini kuting.");
+   showGateAlert("Hurmatli "+pending.name+", arizangiz hali o'qituvchi tomonidan tasdiqlanmagan. O'qituvchi tasdiqlashi bilan sahifa avtomatik ochiladi.");
    return;
  }
 
@@ -359,8 +362,10 @@ async function verifyStudentLogin(){
  currentStudent=s;
  isTeacher=false;
  currentStudent.lastLogin="Bugun";
- sessionStorage.setItem("kletka_active_student",JSON.stringify(currentStudent));
- sessionStorage.removeItem("kletka_is_teacher");
+ // Doimiy eslab qolish (qurilmadan chiqqanda ham qayta parol so'ramasligi uchun)
+ localStorage.setItem("kletka_active_student",JSON.stringify(currentStudent));
+ localStorage.setItem("kletka_my_account",JSON.stringify({name:s.name, phone:s.phone, password:s.password}));
+ localStorage.removeItem("kletka_is_teacher");
  persist();
  unlockGate();
  toast("Xush kelibsiz, "+s.name+"! ("+s.days+" kun faol)");
@@ -370,8 +375,8 @@ function verifyTeacherPin(){
  const pin=($("gateTeacherPin").value||"").trim();
  if(pin===teacherPin||pin==="2026"){
   isTeacher=true;currentStudent=null;
-  sessionStorage.setItem("kletka_is_teacher","true");
-  sessionStorage.removeItem("kletka_active_student");
+  localStorage.setItem("kletka_is_teacher","true");
+  localStorage.removeItem("kletka_active_student");
   unlockGate();
   toast("O'qituvchi kabinetiga kirdingiz!");
  }else{
@@ -393,13 +398,19 @@ function unlockGate(){
  }
 }
 
-function lockGate(){
- sessionStorage.removeItem("kletka_active_student");
- sessionStorage.removeItem("kletka_is_teacher");
- currentStudent=null;isTeacher=false;
+function lockGate(manual=true){
+ if(manual){
+  localStorage.removeItem("kletka_active_student");
+  localStorage.removeItem("kletka_is_teacher");
+  currentStudent=null;isTeacher=false;
+  toast("Hisobdan chiqildi.");
+ }
  $("gateModal").classList.remove("hidden");
+ if(mySavedAccount){
+  if($("gateLoginPhone")) $("gateLoginPhone").value=mySavedAccount.phone||"";
+  if($("gateLoginPassword")) $("gateLoginPassword").value=mySavedAccount.password||"";
+ }
  switchGate("code");
- toast("Tizim qulflandi.");
 }
 
 // BULUTLI SINXRONIZATSIYA
@@ -851,8 +862,63 @@ function renderStats(){
  `).join("");
 }
 
-// Auto-check auth state on boot
-if(currentStudent||isTeacher){unlockGate()}else{lockGate()}
+// Auto-check auth state on boot with automatic account recognition
+async function initBootAuth(){
+  if(isTeacher){
+    unlockGate();
+    return;
+  }
+  if(currentStudent && currentStudent.active && currentStudent.days > 0){
+    unlockGate();
+    // Background sync to ensure student's days are up to date from Supabase
+    syncStudentsFromCloud().then(()=>{
+      const refreshed = students.find(x => x.id === currentStudent.id || x.code === currentStudent.code);
+      if(refreshed){
+        currentStudent = { ...currentStudent, ...refreshed };
+        localStorage.setItem("kletka_active_student", JSON.stringify(currentStudent));
+        if($("userBadge")) $("userBadge").textContent = "🎓 " + currentStudent.name + " (" + currentStudent.days + " kun)";
+      }
+    });
+    return;
+  }
+
+  // Agar o'quvchi avval ariza yuborgan bo'lsa yoki hisobi saqlangan bo'lsa:
+  if(mySavedAccount && (mySavedAccount.phone || mySavedAccount.name)){
+    const clean=s=>String(s||"").replace(/[^\d+]/g,"");
+    const cleanPhone = clean(mySavedAccount.phone);
+
+    // Supabase'dan tasdiqlangan o'quvchilarni tekshiramiz
+    const data = await sbFetch("kletka_students?select=*");
+    if(data && Array.isArray(data)){
+      const found = data.find(s =>
+        (s.phone && clean(s.phone) === cleanPhone) ||
+        (s.name && s.name.toLowerCase() === mySavedAccount.name.toLowerCase())
+      );
+      if(found && found.active && (found.days === undefined || found.days > 0)){
+        // O'qituvchi ruxsat bergan! Sayt hech qanday parol so'ramasdan AVTOMATIK OCHILADI!
+        currentStudent = {
+          id: found.id,
+          name: found.name,
+          phone: found.phone,
+          password: found.password,
+          code: found.code,
+          days: found.days ?? 30,
+          active: found.active ?? true,
+          minutes: found.minutes ?? 0,
+          lastLogin: "Bugun"
+        };
+        localStorage.setItem("kletka_active_student", JSON.stringify(currentStudent));
+        unlockGate();
+        toast("Xush kelibsiz, "+currentStudent.name+"! Ruxsat berildi ("+currentStudent.days+" kun faol)");
+        return;
+      }
+    }
+  }
+
+  lockGate(false);
+}
+
+initBootAuth();
 </script>
 </body>
 </html>
