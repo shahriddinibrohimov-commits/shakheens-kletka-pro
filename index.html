@@ -73,6 +73,13 @@
 <aside class="side" id="sidebar">
  <button class="nav active" data-page="translate" onclick="showPage('translate',this)"><span>⇄</span> Kletka tarjima</button>
  <button class="nav" data-page="reverse" onclick="showPage('reverse',this)"><span>↩</span> Teskari tarjima</button>
+ <button class="nav" data-page="vocab" onclick="showPage('vocab',this)" style="border-left:3px solid #6366f1"><span>📚</span> So‘zlar banki & O‘yinlar</button>
+ <button class="nav" data-page="puzzle" onclick="showPage('puzzle',this)" style="border-left:3px solid #10b981"><span>🧩</span> Kletka Pazl (Builder)</button>
+ <button class="nav" data-page="grammar" onclick="showPage('grammar',this)" style="border-left:3px solid #06b6d4"><span>🎓</span> Grammatika testlari</button>
+ <button class="nav" data-page="listening" onclick="showPage('listening',this)" style="border-left:3px solid #a855f7"><span>🎧</span> Talaffuz & Tinglash</button>
+ <button class="nav" data-page="streak" onclick="showPage('streak',this)" style="border-left:3px solid #f59e0b"><span>🔥</span> Kunlik Streak & XP</button>
+ <button class="nav" data-page="homework" onclick="showPage('homework',this)" style="border-left:3px solid #3b82f6"><span>📋</span> Uyga vazifalar</button>
+ <button class="nav" data-page="materials" onclick="showPage('materials',this)" style="border-left:3px solid #10b981"><span>📊</span> Baza & Materiallar (Excel)</button>
  <button class="nav teacher-only hidden" data-page="requests" onclick="showPage('requests',this)"><span>⏳</span> Kirish so'rovlari <span id="reqCountBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:auto">0</span></button>
  <button class="nav teacher-only hidden" data-page="students" onclick="showPage('students',this)"><span>♙</span> O'quvchilar & Vaqt</button>
  <button class="nav teacher-only hidden" data-page="subscriptions" onclick="showPage('subscriptions',this)"><span>◷</span> Obunalar</button>
@@ -146,6 +153,388 @@
   <div id="reverseCells"></div>
   <div class="field"><label>Final English sentence</label><textarea id="reverseFinal" placeholder="Write the complete English sentence..."></textarea></div>
   <button class="btn success" onclick="checkReverse()">Tekshirish</button><div id="reverseFeedback"></div>
+ </div>
+</section>
+
+<!-- PAGE 1: VOCABULARY BANK & GAMES -->
+<section class="page" id="page-vocab">
+ <div class="heading">
+  <div>
+    <h2>📚 Kletka So‘zlar Banki & Interaktiv O‘yinlar</h2>
+    <p>So‘zlarni Kletka bo‘laklari, aniq audio talaffuz va 3 xil o‘yin orqali yodlang.</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;background:#1e1b4b;padding:8px 14px;border-radius:12px;border:1px solid #4338ca">
+    <span style="font-size:18px">🏆</span>
+    <div><div style="font-size:10px;color:#a5b4fc">Yodlangan so‘zlar:</div><strong id="vocabMemorizedTag" style="color:#fbbf24;font-size:14px">0 / 25 ta</strong></div>
+  </div>
+ </div>
+
+ <!-- Rejimlar -->
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+  <button class="btn primary small" id="btnVocabModeList" onclick="setVocabMode('list')">📖 Lug‘at ro‘yxati</button>
+  <button class="btn small" id="btnVocabModeFlash" onclick="setVocabMode('flashcards')">🃏 Flesh-kartalar (Flip)</button>
+  <button class="btn small" id="btnVocabModeMatch" onclick="setVocabMode('match')">🧩 Juftini top o‘yini</button>
+  <button class="btn small" id="btnVocabModeQuiz" onclick="setVocabMode('quiz')">⚡ Tezkor viktorina</button>
+ </div>
+
+ <!-- Qidiruv va Filter -->
+ <div class="card" id="vocabFilterCard" style="margin-bottom:14px;padding:12px">
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <input type="text" id="vocabSearchInput" oninput="filterVocabList()" placeholder="So‘z yoki tarjimani qidirish..." style="flex:1;min-width:200px">
+    <select id="vocabCatSelect" onchange="filterVocabList()" style="width:auto">
+      <option value="all">Barcha mavzular</option>
+      <option value="daily">Kundalik suhbat</option>
+      <option value="ielts">IELTS / Akademik</option>
+      <option value="phrasal">Phrasal Verbs</option>
+      <option value="business">Biznes & Ish</option>
+      <option value="travel">Sayohat & Joylar</option>
+    </select>
+  </div>
+ </div>
+
+ <!-- 1. Lug'at Ro'yxati Ko'rinishi -->
+ <div id="vocabListView" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+
+ <!-- 2. Flesh-karta (3D Flip) Ko'rinishi -->
+ <div id="vocabFlashView" style="display:none;max-width:520px;margin:0 auto">
+  <div id="flashCardBox" onclick="flipFlashcard()" style="cursor:pointer;user-select:none;background:linear-gradient(180deg,#1e1b4b,#0f172a);border:2px solid #6366f1;border-radius:24px;padding:32px 24px;min-height:280px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;box-shadow:0 20px 25px -5px rgba(0,0,0,0.5)">
+    <div style="width:100%;display:flex;justify-content:space-between;font-size:11px;color:#94a3b8">
+      <span id="flashCardBadge" style="background:#312e81;color:#c7d2fe;padding:2px 8px;border-radius:6px;font-weight:700">A2</span>
+      <span>Aylantirish uchun bosing 🔄</span>
+    </div>
+    <div id="flashCardContent" style="margin:auto 0">
+      <h2 id="flashCardWord" style="font-size:32px;font-weight:800;color:#fff;margin-bottom:6px">Accomplish</h2>
+      <div id="flashCardPhonetic" style="font-family:monospace;color:#a5b4fc;font-size:13px;margin-bottom:12px">/əˈkʌm.plɪʃ/</div>
+      <button type="button" class="btn small" style="background:#4f46e5" onclick="event.stopPropagation();speakCurrentFlashcard()">🔊 Talaffuzni eshitish</button>
+    </div>
+    <div style="font-size:11px;color:#64748b" id="flashCardSideLabel">Old tomoni (Inglizcha)</div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px">
+    <button class="btn small" onclick="prevFlashcard()">Oldingisi</button>
+    <button class="btn success small" onclick="markFlashcardMemorized()">✓ Yodladim! (+15 XP)</button>
+    <button class="btn small" onclick="nextFlashcard()">Keyingisi</button>
+  </div>
+ </div>
+
+ <!-- 3. Match Pairs O'yini Ko'rinishi -->
+ <div id="vocabMatchView" style="display:none;max-width:620px;margin:0 auto">
+  <div class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+    <div><strong>🧩 Juftini top</strong><p class="sub" style="margin:0">Inglizcha so‘zni, so‘ng unga mos o‘zbekcha tarjimani tanlang!</p></div>
+    <div><span class="pill" style="background:#f59e0b;color:#000;font-weight:800" id="matchScoreTag">+0 XP</span></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div id="matchColEn" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div id="matchColUz" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+  <div style="text-align:center;margin-top:16px">
+    <button class="btn small" onclick="initMatchGame()">🔄 Yangi so‘zlar bilan qayta boshlash</button>
+  </div>
+ </div>
+
+ <!-- 4. Viktorina Ko'rinishi -->
+ <div id="vocabQuizView" style="display:none;max-width:540px;margin:0 auto">
+  <div class="card" style="text-align:center;padding:24px">
+    <span class="pill" id="quizLevelTag">B1</span>
+    <h2 id="quizWordText" style="font-size:30px;color:#fff;margin:12px 0 6px">Opportunity</h2>
+    <div id="quizPhoneticText" style="font-family:monospace;color:#94a3b8;font-size:12px;margin-bottom:12px">/ˌɒp.əˈtjuː.nə.ti/</div>
+    <button class="btn small" onclick="speakCurrentQuizWord()" style="margin-bottom:20px">🔊 Talaffuzni eshitish</button>
+    <div id="quizOptionsBox" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left"></div>
+    <div id="quizNextBox" style="display:none;margin-top:16px">
+      <button class="btn primary" onclick="nextVocabQuiz()">Keyingi savol ➔</button>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 2: KLETKA PUZZLE (BUILDER) -->
+<section class="page" id="page-puzzle">
+ <div class="heading">
+  <div>
+    <h2>🧩 Kletka Pazl (Sentence Builder)</h2>
+    <p>Aralashgan kletkalarni grammatik tartibda terib, to‘g‘ri inglizcha gap yasang!</p>
+  </div>
+  <div style="display:flex;gap:6px">
+    <button class="btn small" onclick="filterPuzzleLevel('ALL')">Barchasi</button>
+    <button class="btn small" onclick="filterPuzzleLevel('A1')">A1</button>
+    <button class="btn small" onclick="filterPuzzleLevel('A2')">A2</button>
+    <button class="btn small" onclick="filterPuzzleLevel('B1')">B1</button>
+    <button class="btn small" onclick="filterPuzzleLevel('B2')">B2</button>
+  </div>
+ </div>
+
+ <div class="card" style="margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span class="pill" id="puzzleLevelTag" style="background:#064e3b;color:#6ee7b7">A1 · Kundalik odat</span>
+    <span style="font-size:12px;color:#94a3b8" id="puzzleIndexTag">Pazl: 1 / 7</span>
+  </div>
+
+  <div style="background:#090d16;padding:14px;border-radius:12px;border:1px solid #1e293b;margin-bottom:16px">
+    <div style="font-size:11px;font-weight:700;color:#10b981;text-transform:uppercase;margin-bottom:4px">🇺🇿 O‘zbekcha ma’nosi:</div>
+    <div id="puzzleUzbekText" style="font-size:16px;font-weight:700;color:#fff">“Men odatda ertalab ko‘k choy ichaman.”</div>
+  </div>
+
+  <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">Siz yig‘ayotgan gap kletkalari (Olib tashlash uchun ustiga bosing):</div>
+  <div id="puzzleWorkspace" style="min-height:90px;background:#090d16;border:2px dashed #334155;border-radius:14px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px">
+    <div style="color:#64748b;font-size:12px;font-style:italic">Pastdagi kletkalarni bosib shu yerga to‘g‘ri tartibda tering...</div>
+  </div>
+
+  <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">Aralash kletkalar banki (Tanlash uchun bosing):</div>
+  <div id="puzzleBank" style="min-height:60px;background:#131c2e;border:1px solid #2b3952;border-radius:14px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px"></div>
+
+  <div style="margin-bottom:14px">
+    <button class="btn small" onclick="togglePuzzleTip()" style="color:#fbbf24">💡 Kletka qonuniyati maslahatini ko‘rish</button>
+    <div id="puzzleTipBox" style="display:none;margin-top:8px;padding:10px;background:#2d1e0f;border:1px solid #854d0e;border-radius:10px;font-size:12px;color:#fde047"></div>
+  </div>
+
+  <div id="puzzleResultFeedback" style="display:none;padding:12px;border-radius:12px;margin-bottom:14px"></div>
+
+  <div class="actions" style="border-top:1px solid #1e293b;padding-top:14px">
+    <button class="btn" onclick="speakPuzzleAudio()">🔊 Namuna ovoz</button>
+    <button class="btn success" onclick="checkCurrentPuzzle()">✓ Tekshirish (+25 XP)</button>
+    <button class="btn primary" onclick="nextPuzzle()">Keyingi pazl ➔</button>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 3: GRAMMAR TESTS -->
+<section class="page" id="page-grammar">
+ <div class="heading">
+  <div>
+    <h2>🎓 Kletka Grammatika Imtihoni</h2>
+    <p>Har bir savolga javob bering va aniq Kletka qoidasi orqali sababini bilib oling!</p>
+  </div>
+  <div style="background:#131f33;padding:8px 14px;border-radius:12px;border:1px solid #2b3952">
+    <div style="font-size:10px;color:#94a3b8">Natija:</div>
+    <strong id="grammarScoreBadge" style="color:#34d399;font-size:14px">0 / 0 ta to‘g‘ri</strong>
+  </div>
+ </div>
+
+ <div class="card" style="max-width:680px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1e293b">
+    <span class="pill" id="grammarTopicTag" style="background:#0e7490;color:#cffafe">Present Tenses</span>
+    <span style="font-size:12px;color:#94a3b8" id="grammarQuestionIdxTag">Savol: 1 / 8</span>
+  </div>
+
+  <h3 id="grammarQuestionText" style="font-size:18px;color:#fff;line-height:1.5;margin-bottom:8px">Listen! Somebody _______ the piano in the music room upstairs.</h3>
+  <button class="btn small" onclick="speakGrammarQuestion()" style="margin-bottom:18px">🔊 Savolni eshitish</button>
+
+  <div id="grammarOptionsBox" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px"></div>
+
+  <div id="grammarExplanationCard" style="display:none;background:#090d16;border:1px solid #1e293b;border-radius:14px;padding:14px;margin-bottom:16px">
+    <div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;margin-bottom:4px">💡 Kletka Tushuntirish & Qoida:</div>
+    <div id="grammarExplanationText" style="font-size:13px;color:#cbd5e1;line-height:1.6;margin-bottom:6px"></div>
+    <div id="grammarRuleText" style="font-size:12px;color:#818cf8;background:#1e1b4b;padding:8px;border-radius:8px"></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1e293b;padding-top:14px">
+    <button class="btn small" onclick="resetGrammarQuiz()">🔄 Qayta boshlash</button>
+    <button class="btn primary small" id="btnNextGrammar" style="display:none" onclick="nextGrammarQuestion()">Keyingi savol ➔</button>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 4: AUDIO & LISTENING HUB -->
+<section class="page" id="page-listening">
+ <div class="heading">
+  <div>
+    <h2>🎧 Talaffuz & Audio Tinglash Laboratoriyasi</h2>
+    <p>Ovozni diqqat bilan eshitib, gapdagi tushirib qoldirilgan kletkani toping yoki o‘z matnlaringizni eshiting.</p>
+  </div>
+ </div>
+
+ <div class="grid2">
+  <!-- 1. Listening Challenge -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span class="pill" style="background:#581c87;color:#e9d5ff" id="listeningLevelTag">A1 · Tinglab topish</span>
+      <span style="font-size:12px;color:#94a3b8" id="listeningIdxTag">Mashq: 1 / 4</span>
+    </div>
+
+    <div style="background:#090d16;border:1px solid #1e293b;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">Quyidagi tugmani bosing va diqqat bilan eshiting:</div>
+      <div style="display:flex;justify-content:center;gap:8px">
+        <button class="btn primary" onclick="playCurrentListening(0.95)">🔊 Eshitish (1.0x)</button>
+        <button class="btn small" onclick="playCurrentListening(0.7)">🐢 Sekin (0.7x)</button>
+      </div>
+    </div>
+
+    <div style="background:#131c2e;border:1px solid #2b3952;border-radius:12px;padding:12px;margin-bottom:14px">
+      <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700">Gapdagi kletkani toping:</div>
+      <div id="listeningSentenceText" style="font-size:15px;font-weight:700;color:#fff;margin:4px 0">I usually [ ? ? ? ] at seven o clock in the morning.</div>
+      <div id="listeningUzbekText" style="font-size:12px;color:#94a3b8;font-style:italic">“Men odatda ertalab soat yettida nonushta qilaman.”</div>
+    </div>
+
+    <div id="listeningOptionsBox" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+
+    <div style="text-align:right" id="listeningNextBox" style="display:none">
+      <button class="btn primary small" onclick="nextListeningChallenge()">Keyingi mashq ➔</button>
+    </div>
+  </div>
+
+  <!-- 2. Speech Sandbox -->
+  <div class="card">
+    <h3>🎙️ Ovozli Talaffuz Sandbox</h3>
+    <p class="sub">Istalgan inglizcha so‘z yoki gapni yozing va professional talaffuzini eshiting.</p>
+    <div class="field">
+      <label>Inglizcha matn:</label>
+      <textarea id="sandboxInput" rows="4">Welcome to Shakheen’s Kletka Pro educational platform!</textarea>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="display:flex;gap:4px">
+        <button class="btn small" onclick="setSandboxSpeed(0.75)">0.75x</button>
+        <button class="btn small" onclick="setSandboxSpeed(0.95)">1.0x</button>
+        <button class="btn small" onclick="setSandboxSpeed(1.2)">1.2x</button>
+      </div>
+      <button class="btn primary" onclick="speakSandbox()">🔊 Talaffuzni eshitish</button>
+    </div>
+
+    <div style="border-top:1px solid #1e293b;padding-top:12px">
+      <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Qiyin talaffuz iboralari:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <button class="btn small" onclick="runSandboxPreset('Throughout the whole world')">Throughout the whole world</button>
+        <button class="btn small" onclick="runSandboxPreset('Particularly comfortable')">Particularly comfortable</button>
+        <button class="btn small" onclick="runSandboxPreset('Phenomenal opportunity')">Phenomenal opportunity</button>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 5: STREAK & GAMIFICATION -->
+<section class="page" id="page-streak">
+ <div class="heading">
+  <div>
+    <h2>🔥 Kunlik Streak, XP va Yutuqlar</h2>
+    <p>Har kuni dars qiling, streak olovini saqlang va yuqori darajalarga erishing!</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#78350f,#451a03);padding:10px 18px;border-radius:16px;border:1px solid #f59e0b">
+    <span style="font-size:32px">🔥</span>
+    <div>
+      <div style="font-size:10px;color:#fde68a;font-weight:700;text-transform:uppercase">Kunlik Streak:</div>
+      <strong id="streakDaysCount" style="font-size:20px;color:#fff">3 kun ketma-ket</strong>
+    </div>
+  </div>
+ </div>
+
+ <div class="stats" style="margin-bottom:16px">
+  <div class="stat"><div class="label">Sizning unvoningiz</div><div class="num" id="userLevelTitle" style="font-size:15px;color:#818cf8">Level 2: Kletka Shogirdi</div></div>
+  <div class="stat"><div class="label">Jami Tajriba (XP)</div><div class="num" id="totalUserXP" style="color:#fbbf24">+140 XP</div></div>
+  <div class="stat"><div class="label">Ochilgan nishonlar</div><div class="num" id="unlockedBadgesCount" style="color:#34d399">3 / 6 ta</div></div>
+ </div>
+
+ <div class="card" style="margin-bottom:16px">
+  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+    <span style="color:#94a3b8">Keyingi darajagacha progress:</span>
+    <strong id="xpProgressText" style="color:#a5b4fc">140 / 200 XP</strong>
+  </div>
+  <div style="width:100%;height:10px;background:#090d16;border-radius:10px;overflow:hidden;border:1px solid #1e293b">
+    <div id="xpProgressBar" style="height:100%;background:linear-gradient(90deg,#6366f1,#f59e0b);width:70%;transition:width 0.5s"></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>Ta’limiy Nishonlar & Medallar (Badges)</h3>
+  <p class="sub">Mashqlarni to‘g‘ri yechish orqali barcha faxriy nishonlarni oching.</p>
+  <div id="badgesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px"></div>
+ </div>
+</section>
+
+<!-- PAGE 6: HOMEWORK & ASSIGNMENTS -->
+<section class="page" id="page-homework">
+ <div class="heading">
+  <div>
+    <h2>📋 Uyga Vazifalar & Topshiriqlar Markazi</h2>
+    <p>O‘qituvchi belgilagan topshiriqlarni bajaring yoki yangi vazifa yuklang.</p>
+  </div>
+  <div style="background:#1e1b4b;padding:8px 14px;border-radius:12px;border:1px solid #4338ca">
+    <div style="font-size:10px;color:#a5b4fc">Kutilayotgan vazifalar:</div>
+    <strong id="pendingHomeworksCount" style="color:#fbbf24;font-size:14px">2 ta faol</strong>
+  </div>
+ </div>
+
+ <!-- Teacher only creation box -->
+ <div class="card teacher-only hidden" style="margin-bottom:16px">
+  <h3>➕ Yangi vazifa biriktirish (O‘qituvchi uchun)</h3>
+  <div class="grid2">
+    <div class="field"><label>Mavzu / Vazifa nomi</label><input type="text" id="hwNewTitle" placeholder="Masalan: Past Simple bo‘yicha 4 ta kletka pazl"></div>
+    <div class="field"><label>Topshirish muddati</label><input type="text" id="hwNewDueDate" value="Ertaga, 20:00 gacha"></div>
+  </div>
+  <div class="field"><label>Vazifa tavsifi / Ko‘rsatma</label><textarea id="hwNewDesc" rows="2" placeholder="O‘quvchilar nima qilishi kerakligini yozing..."></textarea></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;gap:8px">
+      <select id="hwNewType" style="width:auto">
+        <option value="puzzle">🧩 Kletka Pazl</option>
+        <option value="vocab">📚 Lug‘at yodlash</option>
+        <option value="grammar">🎓 Grammatika testi</option>
+        <option value="translate">✍️ Kletka tarjima</option>
+      </select>
+    </div>
+    <button class="btn primary" onclick="createHomework()">🚀 Vazifani barchaga yuborish</button>
+  </div>
+ </div>
+
+ <!-- Assignments List -->
+ <div id="homeworkListContainer" style="display:flex;flex-direction:column;gap:12px"></div>
+</section>
+
+<!-- PAGE: MATERIALS & EXCEL IMPORT -->
+<section class="page" id="page-materials">
+ <div class="heading">
+  <div>
+    <h2>📊 Baza & Materiallar Menejeri (Excel / CSV / JSON)</h2>
+    <p>Yangi so‘zlar, pazllar yoki testlarni Excel fayl orqali yoki nusxalab qo‘yish bilan bir zumda yuklang!</p>
+  </div>
+  <button class="btn small" onclick="exportFullMaterialsBackup()">💾 Barcha bazani yuklab olish (.JSON)</button>
+ </div>
+
+ <!-- Tab selector -->
+ <div style="display:flex;gap:8px;margin-bottom:14px">
+  <button class="btn primary small" id="btnMatTabVocab" onclick="switchMaterialsTab('vocab')">📚 Lug‘at & So‘zlar</button>
+  <button class="btn small" id="btnMatTabPuzzle" onclick="switchMaterialsTab('puzzle')">🧩 Kletka Pazllar</button>
+  <button class="btn small" id="btnMatTabGrammar" onclick="switchMaterialsTab('grammar')">🎓 Grammatika Testlari</button>
+ </div>
+
+ <div class="grid2" style="margin-bottom:16px">
+  <!-- 1. CSV / JSON File Upload -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3>📁 1. Excel (CSV) / JSON Fayldan yuklash</h3>
+      <button class="btn small" style="color:#6ee7b7" onclick="downloadMatTemplate()">📥 Namuna shablon (.csv)</button>
+    </div>
+    <p class="sub">Excelda to‘ldirilgan faylingizni tanlang. 50, 100 yoki 500 ta ma’lumot soniyalar ichida bazaga qo‘shiladi!</p>
+
+    <div style="border:2px dashed #334155;background:#090d16;padding:20px;border-radius:14px;text-align:center">
+      <input type="file" id="matFileInput" accept=".csv,.json,text/csv,application/json" onchange="handleStandaloneFileUpload(event)" style="display:none">
+      <button class="btn primary" onclick="$('matFileInput').click()">📂 Faylni tanlash (.csv yoki .json)</button>
+      <div style="font-size:11px;color:#94a3b8;margin-top:8px" id="matUploadHint">Andozaga mos .csv yoki .json formatini qabul qiladi.</div>
+    </div>
+  </div>
+
+  <!-- 2. Quick Paste (Text) -->
+  <div class="card">
+    <h3>✍️ 2. Tezkor matn orqali qo‘shish (Quick Paste)</h3>
+    <p class="sub">Fayl yaratish shart emas! So‘z va tarjimani tenglik (=) bilan yozing:</p>
+    <div class="field">
+      <textarea id="matQuickText" rows="4" placeholder="Accomplish = Bajarmoq = B1&#10;Opportunity = Imkoniyat = A2&#10;Convenient = Qulay = B1"></textarea>
+    </div>
+    <div style="text-align:right">
+      <button class="btn success" onclick="handleStandaloneQuickAdd()">➕ Bazaga darhol qo‘shish</button>
+    </div>
+  </div>
+ </div>
+
+ <!-- 3. Status summary -->
+ <div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <h3>Qo‘shilgan materiallar statistikasi</h3>
+    <button class="btn small danger" onclick="clearStandaloneCustomMaterials()">🗑️ Qo‘shimcha materiallarni tozalash</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="label">Jami So‘zlar</div><div class="num" id="matTotalVocab" style="color:#34d399">10 ta</div></div>
+    <div class="stat"><div class="label">Jami Pazllar</div><div class="num" id="matTotalPuzzles" style="color:#818cf8">5 ta</div></div>
+    <div class="stat"><div class="label">Jami Testlar</div><div class="num" id="matTotalGrammar" style="color:#fbbf24">6 ta</div></div>
+  </div>
  </div>
 </section>
 
@@ -745,6 +1134,13 @@ function showPage(pageId,btn){
  if(pageId==="students")renderStudents();
  if(pageId==="subscriptions")refreshSubscriptions();
  if(pageId==="stats")renderStats();
+ if(pageId==="vocab")renderVocab();
+ if(pageId==="puzzle")renderPuzzle();
+ if(pageId==="grammar")renderGrammar();
+ if(pageId==="listening")renderListening();
+ if(pageId==="streak")renderStreak();
+ if(pageId==="homework")renderHomework();
+ if(pageId==="materials")renderMaterialsManager();
 }
 
 function setRole(role){
@@ -1116,6 +1512,1073 @@ async function initBootAuth(){
   }
 
   lockGate(false);
+}
+
+// ==========================================
+// 6 TA ASOSIY TA'LIMIY VA INTERAKTIV DVIGATEL
+// ==========================================
+
+// Web Speech API - Audio Talaffuz
+function speakEnglish(text, rate = 0.95) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const clean = String(text || '').replace(/[\[\]{}()_#*]/g, ' ').trim();
+  if (!clean) return;
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = 'en-US';
+  u.rate = rate;
+  window.speechSynthesis.speak(u);
+}
+
+// 1. DATA BANKS
+const VOCABULARY_DATA = [
+  { id:'v1', word:'Accomplish', phonetic:'/əˈkʌm.plɪʃ/', translation:'Bajarmoq, erishmoq', def:'To finish something successfully.', en:'She accomplished her goal of learning English.', uz:"U ingliz tilini o'rganish maqsadiga erishdi.", cat:'daily', level:'B1' },
+  { id:'v2', word:'Convenient', phonetic:'/kənˈviː.ni.ənt/', translation:'Qulay, mos', def:'Suitable for your purposes.', en:'Online shopping is very convenient for students.', uz:"Onlayn xarid talabalar uchun juda qulay.", cat:'daily', level:'A2' },
+  { id:'v3', word:'Opportunity', phonetic:'/ˌɒp.əˈtjuː.nə.ti/', translation:'Imkoniyat, qulay vaziyat', def:'A situation making something possible.', en:'This is a great opportunity to study abroad.', uz:"Bu chet elda o'qish uchun ajoyib imkoniyat.", cat:'daily', level:'B1' },
+  { id:'v4', word:'Significant', phonetic:'/sɪɡˈnɪf.ɪ.kənt/', translation:'Ahamiyatli, sezilarli', def:'Important or noticeable.', en:'There has been a significant increase in exam scores.', uz:"Imtihon natijalarida sezilarli o'sish bo'ldi.", cat:'ielts', level:'B2' },
+  { id:'v5', word:'Crucial', phonetic:'/ˈkruː.ʃəl/', translation:'Hal qiluvchi, o‘ta muhim', def:'Extremely important or necessary.', en:'Regular practice is crucial for English fluency.', uz:"Muntazam mashq ravon so'zlashish uchun o'ta muhim.", cat:'ielts', level:'B2' },
+  { id:'v6', word:'Give up', phonetic:'/ɡɪv ʌp/', translation:'Taslim bo‘lmoq', def:'To stop doing something before finishing.', en:'Never give up when facing difficult sentences!', uz:"Qiyin gaplarga duch kelganda taslim bo'lmang!", cat:'phrasal', level:'A2' },
+  { id:'v7', word:'Figure out', phonetic:'/ˈfɪɡ.ər aʊt/', translation:'Tushunib yetmoq, yechim topmoq', def:'To solve or understand a problem.', en:'Can you figure out which cell comes first?', uz:"Qaysi kletka birinchi kelishini tushuna olasizmi?", cat:'phrasal', level:'B1' },
+  { id:'v8', word:'Collaborate', phonetic:'/kəˈlæb.ə.reɪt/', translation:'Hamkorlik qilmoq', def:'To work together to achieve something.', en:'Teachers and students collaborate for best results.', uz:"Ustoz va shogirdlar hamkorlik qilishadi.", cat:'business', level:'B2' },
+  { id:'v9', word:'Destination', phonetic:'/ˌdes.tɪˈneɪ.ʃən/', translation:'Manzil, boriladigan joy', def:'The place where someone is going.', en:'Samarkand is our final travel destination.', uz:"Samarqand bizning yakuniy manzilimizdir.", cat:'travel', level:'A2' },
+  { id:'v10', word:'Innovative', phonetic:'/ˈɪn.ə.və.tɪv/', translation:'Innovatsion, yangilik kirituvchi', def:'Using new methods or ideas.', en:'Our web app uses innovative kletka techniques.', uz:"Ilovamiz innovatsion kletka usulidan foydalanadi.", cat:'business', level:'B2' }
+];
+
+const PUZZLE_DATA = [
+  {
+    id: 'p1', level: 'A1', cat: 'Kundalik odat (Present Simple)',
+    fullEn: 'I usually drink green tea in the morning.',
+    fullUz: 'Men odatda ertalab ko‘k choy ichaman.',
+    chunks: ['I usually', 'drink', 'green tea', 'in the morning.'],
+    scrambled: ['in the morning.', 'drink', 'I usually', 'green tea'],
+    tip: 'Tartib: [Kim? Ega] + [Fe\'l] + [Nima? To\'ldiruvchi] + [Qachon? Vaqt holi].'
+  },
+  {
+    id: 'p2', level: 'A1', cat: 'Harakat jarayoni (Present Continuous)',
+    fullEn: 'My younger brother is watching cartoons right now.',
+    fullUz: 'Mening ukam ayni damda multfilm tomosha qilmoqda.',
+    chunks: ['My younger brother', 'is watching', 'cartoons', 'right now.'],
+    scrambled: ['right now.', 'cartoons', 'My younger brother', 'is watching'],
+    tip: 'Ega (Brother) -> Fe\'l (is watching) -> To\'ldiruvchi (cartoons) -> Vaqt (right now).'
+  },
+  {
+    id: 'p3', level: 'A2', cat: 'O‘tgan zamon (Past Simple)',
+    fullEn: 'They bought a brand new laptop yesterday.',
+    fullUz: 'Ular kecha yangi noutbuk sotib olishdi.',
+    chunks: ['They bought', 'a brand new laptop', 'yesterday.'],
+    scrambled: ['yesterday.', 'They bought', 'a brand new laptop'],
+    tip: 'O\'tgan zamonda fe\'l V2 (bought) shaklida bo\'ladi.'
+  },
+  {
+    id: 'p4', level: 'B1', cat: 'Kelajak reja (Future)',
+    fullEn: 'We are planning to visit Samarkand next weekend.',
+    fullUz: 'Biz kelasi dam olish kunlari Samarqandga borishni rejalashtiryapmiz.',
+    chunks: ['We are planning', 'to visit Samarkand', 'next weekend.'],
+    scrambled: ['next weekend.', 'to visit Samarkand', 'We are planning'],
+    tip: 'Vaqt holi (next weekend) gap oxirida keladi.'
+  },
+  {
+    id: 'p5', level: 'B2', cat: 'Shart mayli (First Conditional)',
+    fullEn: 'If you practice every day, you will master English easily.',
+    fullUz: 'Agar har kuni mashq qilsangiz, ingliz tilini osonlikcha o‘rganasiz.',
+    chunks: ['If you practice', 'every day,', 'you will master', 'English easily.'],
+    scrambled: ['you will master', 'If you practice', 'English easily.', 'every day,'],
+    tip: 'Shart qismida Present Simple, natija qismida will + fe\'l keladi.'
+  }
+];
+
+const GRAMMAR_DATA = [
+  {
+    id:'g1', topic:'Present Tenses',
+    q:'Listen! Somebody _______ the piano in the music room upstairs.',
+    options:['plays','is playing','played','has played'],
+    correct:1,
+    exp:'"Listen!" so‘zi harakat ayni daqiqada sodir bo‘layotganini bildiradi. Shuning uchun Present Continuous (is playing) ishlatiladi.',
+    rule:'Kletka: [Somebody] + [is playing] (davomli fe\'l) + [the piano].'
+  },
+  {
+    id:'g2', topic:'Present Simple',
+    q:'My father usually _______ to work by car, but today he is walking.',
+    options:['go','goes','is going','went'],
+    correct:1,
+    exp:'3-shaxs birlik (My father = He) uchun odatiy harakatlarda fe‘lga -s qo‘shiladi: goes.',
+    rule:'Kletka: He/She/It egasi bilan Present Simple da fe\'l -s oladi.'
+  },
+  {
+    id:'g3', topic:'Past Simple vs Continuous',
+    q:'While I _______ my homework, the electricity suddenly went out.',
+    options:['did','was doing','am doing','have done'],
+    correct:1,
+    exp:'"While" dan keyin o‘tgan zamondagi davomli jarayon keladi: was doing.',
+    rule:'Kletka: [While I was doing] (fon jarayon) + [went out] (to\'satdan uzilish).'
+  },
+  {
+    id:'g4', topic:'Future Forms',
+    q:'Look at those dark clouds in the sky! It _______.',
+    options:['will rain','is going to rain','rains','rained'],
+    correct:1,
+    exp:'Vizual isbot bor bo‘lganda "be going to" konstruksiyasi ishlatiladi.',
+    rule:'Kletka: Ko\'z oldidagi dalil = [is going to + fe\'l].'
+  },
+  {
+    id:'g5', topic:'Modal Verbs',
+    q:'You _______ show your passport when boarding an international flight.',
+    options:['might','should','must','could'],
+    correct:2,
+    exp:'Qonuniy talab va majburiyatlar uchun "must" ishlatiladi.',
+    rule:'Kletka: Qat\'iy majburiyat = [must + bare verb].'
+  },
+  {
+    id:'g6', topic:'Prepositions',
+    q:'Our final exam is scheduled _______ Monday morning _______ 9:00 AM.',
+    options:['at / in','on / at','in / on','on / in'],
+    correct:1,
+    exp:'Kunlar uchun "on" (on Monday), soatlar uchun "at" (at 9:00 AM) ishlatiladi.',
+    rule:'Kletka formulasi: Kunga -> ON, Soatga -> AT.'
+  }
+];
+
+const LISTENING_DATA = [
+  {
+    id:'l1', level:'A1',
+    sentence:'I usually have breakfast at seven o clock in the morning.',
+    uz:'Men odatda ertalab soat yettida nonushta qilaman.',
+    missing:'have breakfast',
+    options:['have breakfast','drink coffee','watch television','read newspaper']
+  },
+  {
+    id:'l2', level:'A2',
+    sentence:'She is learning English because she wants to travel around the world.',
+    uz:'U dunyo bo‘ylab sayohat qilishni xohlagani uchun ingliz tilini o‘rganmoqda.',
+    missing:'wants to travel',
+    options:['wants to travel','likes to cook','needs to work','loves to sleep']
+  },
+  {
+    id:'l3', level:'B1',
+    sentence:'We decided to implement modern digital tools in our classroom.',
+    uz:'Biz sinfimizda zamonaviy raqamli vositalarni joriy qilishga qaror qildik.',
+    missing:'decided to implement',
+    options:['decided to implement','refused to accept','forgot to mention','hoped to visit']
+  }
+];
+
+let memorizedWords = JSON.parse(localStorage.getItem('kletka_memorized_words') || '["v1","v2"]');
+let gamification = JSON.parse(localStorage.getItem('kletka_gamification') || '{"xp":140,"streak":3,"lastDate":"","badges":["starter"]}');
+let homeworks = JSON.parse(localStorage.getItem('kletka_homeworks') || 'null') || [
+  { id:'hw1', title:'Present Simple bo‘yicha 4 ta Kletka Pazl', desc:'Pazl bo‘limiga kirib A1/A2 gaplarni terib chiqing.', due:'Ertaga, 18:00', type:'puzzle', status:'pending', by:'Ustoz Shakheen' },
+  { id:'hw2', title:'IELTS So‘zlar bankidan 5 ta so‘z yodlash', desc:'Flesh-kartalar orqali yodlang.', due:'15-oktabr', type:'vocab', status:'completed', by:'Ustoz Shakheen' }
+];
+
+function addGamificationXP(amount, reason) {
+  gamification.xp = (gamification.xp || 0) + amount;
+  const today = new Date().toISOString().slice(0, 10);
+  if (gamification.lastDate !== today) {
+    gamification.streak = (gamification.streak || 1) + 1;
+    gamification.lastDate = today;
+  }
+  localStorage.setItem('kletka_gamification', JSON.stringify(gamification));
+  toast(`+${amount} XP qo'shildi! (${reason || 'Muvaffaqiyat'})`);
+  renderStreak();
+}
+
+// ------------------------------------------
+// 1. VOCABULARY ENGINE
+// ------------------------------------------
+let vocabMode = 'list';
+let flashIdx = 0;
+let isFlashFlipped = false;
+let matchPairsSelected = null;
+let matchPairsMatched = [];
+let matchScore = 0;
+let matchWordsList = [];
+let quizIdx = 0;
+let quizAnswered = false;
+
+function setVocabMode(mode) {
+  vocabMode = mode;
+  ['List','Flash','Match','Quiz'].forEach(m => {
+    const btn = $('btnVocabMode' + m);
+    if (btn) btn.className = 'btn small ' + (mode.toLowerCase() === m.toLowerCase() || (mode==='flashcards'&&m==='Flash') ? 'primary' : '');
+  });
+  $('vocabFilterCard').style.display = (mode === 'list') ? 'block' : 'none';
+  $('vocabListView').style.display = (mode === 'list') ? 'grid' : 'none';
+  $('vocabFlashView').style.display = (mode === 'flashcards') ? 'block' : 'none';
+  $('vocabMatchView').style.display = (mode === 'match') ? 'block' : 'none';
+  $('vocabQuizView').style.display = (mode === 'quiz') ? 'block' : 'none';
+
+  if (mode === 'flashcards') renderFlashcard();
+  if (mode === 'match') initMatchGame();
+  if (mode === 'quiz') initVocabQuiz();
+  if (mode === 'list') filterVocabList();
+}
+
+function renderVocab() {
+  if ($('vocabMemorizedTag')) {
+    $('vocabMemorizedTag').textContent = `${memorizedWords.length} / ${VOCABULARY_DATA.length} ta`;
+  }
+  setVocabMode(vocabMode);
+}
+
+function filterVocabList() {
+  const q = ($('vocabSearchInput')?.value || '').toLowerCase();
+  const cat = $('vocabCatSelect')?.value || 'all';
+
+  const list = VOCABULARY_DATA.filter(w => {
+    const mCat = cat === 'all' || w.cat === cat;
+    const mQ = w.word.toLowerCase().includes(q) || w.translation.toLowerCase().includes(q);
+    return mCat && mQ;
+  });
+
+  $('vocabListView').innerHTML = list.map(item => {
+    const isMem = memorizedWords.includes(item.id);
+    return `
+      <div class="card" style="margin:0;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span class="pill" style="font-size:10px">${item.level} · ${item.cat}</span>
+            <button class="btn small" onclick="speakEnglish('${item.word}')" title="Eshitish">🔊</button>
+          </div>
+          <h3 style="margin-bottom:2px">${esc(item.word)}</h3>
+          <div style="font-family:monospace;font-size:11px;color:#94a3b8;margin-bottom:6px">${esc(item.phonetic)}</div>
+          <div style="font-weight:700;color:#34d399;font-size:13px;margin-bottom:6px">${esc(item.translation)}</div>
+          <p style="font-size:11px;color:#cbd5e1;background:#090d16;padding:8px;border-radius:8px;border:1px solid #1e293b;margin-bottom:8px">${esc(item.def)}</p>
+          <div style="font-size:11px;border-left:2px solid #6366f1;padding-left:8px;color:#94a3b8">
+            <div style="color:#e2e8f0;font-style:italic">“${esc(item.en)}”</div>
+            <div>“${esc(item.uz)}”</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center">
+          <button class="btn small ${isMem?'':'success'}" onclick="toggleMemorized('${item.id}')">${isMem?'✓ Yodlangan':'Yodladim (+15 XP)'}</button>
+          <button class="btn small" onclick="speakEnglish('${item.en.replace(/'/g,"\\'")}')">🔊 Gapni eshitish</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleMemorized(id) {
+  if (!memorizedWords.includes(id)) {
+    memorizedWords.push(id);
+    localStorage.setItem('kletka_memorized_words', JSON.stringify(memorizedWords));
+    addGamificationXP(15, 'So‘z yodlandi');
+  }
+  filterVocabList();
+  renderVocab();
+}
+
+function renderFlashcard() {
+  const w = VOCABULARY_DATA[flashIdx] || VOCABULARY_DATA[0];
+  isFlashFlipped = false;
+  $('flashCardBadge').textContent = `${w.level} · ${flashIdx + 1}/${VOCABULARY_DATA.length}`;
+  $('flashCardSideLabel').textContent = 'Old tomoni (Inglizcha)';
+  $('flashCardContent').innerHTML = `
+    <h2 style="font-size:32px;font-weight:800;color:#fff;margin-bottom:6px">${esc(w.word)}</h2>
+    <div style="font-family:monospace;color:#a5b4fc;font-size:13px;margin-bottom:12px">${esc(w.phonetic)}</div>
+    <button type="button" class="btn small" style="background:#4f46e5" onclick="event.stopPropagation();speakEnglish('${w.word}')">🔊 Talaffuzni eshitish</button>
+  `;
+}
+
+function flipFlashcard() {
+  const w = VOCABULARY_DATA[flashIdx] || VOCABULARY_DATA[0];
+  isFlashFlipped = !isFlashFlipped;
+  if (isFlashFlipped) {
+    $('flashCardSideLabel').textContent = 'Orqa tomoni (Tarjimasi)';
+    $('flashCardContent').innerHTML = `
+      <div style="font-size:26px;font-weight:800;color:#34d399;margin-bottom:8px">${esc(w.translation)}</div>
+      <p style="font-size:13px;color:#cbd5e1;max-width:380px;margin:0 auto 10px">${esc(w.def)}</p>
+      <div style="background:#090d16;padding:10px;border-radius:10px;border:1px solid #1e293b;font-size:12px;text-align:left">
+        <div style="color:#c7d2fe">“${esc(w.en)}”</div>
+        <div style="color:#94a3b8">“${esc(w.uz)}”</div>
+      </div>
+    `;
+  } else {
+    renderFlashcard();
+  }
+}
+
+function nextFlashcard() {
+  flashIdx = (flashIdx + 1) % VOCABULARY_DATA.length;
+  renderFlashcard();
+}
+function prevFlashcard() {
+  flashIdx = (flashIdx - 1 + VOCABULARY_DATA.length) % VOCABULARY_DATA.length;
+  renderFlashcard();
+}
+function markFlashcardMemorized() {
+  const w = VOCABULARY_DATA[flashIdx];
+  if (w) toggleMemorized(w.id);
+  nextFlashcard();
+}
+function speakCurrentFlashcard() {
+  const w = VOCABULARY_DATA[flashIdx];
+  if (w) speakEnglish(w.word);
+}
+
+// Match Game
+function initMatchGame() {
+  matchWordsList = [...VOCABULARY_DATA].sort(() => 0.5 - Math.random()).slice(0, 5);
+  matchPairsSelected = null;
+  matchPairsMatched = [];
+  matchScore = 0;
+  $('matchScoreTag').textContent = '+0 XP';
+
+  const shuffledUz = [...matchWordsList].sort(() => 0.5 - Math.random());
+
+  $('matchColEn').innerHTML = matchWordsList.map(w => `
+    <button id="match_en_${w.id}" class="btn" style="text-align:left;font-weight:700" onclick="matchItemClick('en','${w.id}')">
+      ${esc(w.word)}
+    </button>
+  `).join('');
+
+  $('matchColUz').innerHTML = shuffledUz.map(w => `
+    <button id="match_uz_${w.id}" class="btn" style="text-align:left;font-weight:700" onclick="matchItemClick('uz','${w.id}')">
+      ${esc(w.translation)}
+    </button>
+  `).join('');
+}
+
+function matchItemClick(type, id) {
+  if (matchPairsMatched.includes(id)) return;
+
+  if (!matchPairsSelected) {
+    matchPairsSelected = { type, id };
+    const btn = $(`match_${type}_${id}`);
+    if (btn) btn.style.background = '#4f46e5';
+    if (type === 'en') {
+      const w = matchWordsList.find(x => x.id === id);
+      if (w) speakEnglish(w.word);
+    }
+    return;
+  }
+
+  if (matchPairsSelected.type === type) {
+    const oldBtn = $(`match_${matchPairsSelected.type}_${matchPairsSelected.id}`);
+    if (oldBtn) oldBtn.style.background = '';
+    matchPairsSelected = { type, id };
+    const btn = $(`match_${type}_${id}`);
+    if (btn) btn.style.background = '#4f46e5';
+    return;
+  }
+
+  // Check pair
+  const isCorrect = matchPairsSelected.id === id;
+  const firstBtn = $(`match_${matchPairsSelected.type}_${matchPairsSelected.id}`);
+  const secBtn = $(`match_${type}_${id}`);
+
+  if (isCorrect) {
+    matchPairsMatched.push(id);
+    matchScore += 10;
+    $('matchScoreTag').textContent = `+${matchScore} XP`;
+    if (firstBtn) { firstBtn.style.background = '#064e3b'; firstBtn.style.color = '#6ee7b7'; firstBtn.disabled = true; }
+    if (secBtn) { secBtn.style.background = '#064e3b'; secBtn.style.color = '#6ee7b7'; secBtn.disabled = true; }
+    matchPairsSelected = null;
+    addGamificationXP(10, 'To‘g‘ri juftlik');
+
+    if (matchPairsMatched.length === matchWordsList.length) {
+      addGamificationXP(30, 'Barcha juftliklar topildi!');
+      alert('🔥 Qoyilmaqom! Barcha so‘zlar juftlandi! +30 Bonus XP!');
+    }
+  } else {
+    toast('Xato juftlik!');
+    if (firstBtn) firstBtn.style.background = '';
+    if (secBtn) secBtn.style.background = '';
+    matchPairsSelected = null;
+  }
+}
+
+// Vocab Quiz
+function initVocabQuiz() {
+  quizAnswered = false;
+  $('quizNextBox').style.display = 'none';
+  const w = VOCABULARY_DATA[quizIdx] || VOCABULARY_DATA[0];
+  $('quizLevelTag').textContent = `${w.level} · Savol: ${quizIdx+1}/${VOCABULARY_DATA.length}`;
+  $('quizWordText').textContent = w.word;
+  $('quizPhoneticText').textContent = w.phonetic;
+
+  const wrongs = VOCABULARY_DATA.filter(x => x.id !== w.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(x => x.translation);
+  const allOpts = [w.translation, ...wrongs].sort(() => 0.5 - Math.random());
+
+  $('quizOptionsBox').innerHTML = allOpts.map(opt => `
+    <button class="btn" style="text-align:left;padding:12px;font-weight:600" onclick="selectVocabQuizOption('${opt.replace(/'/g,"\\'")}','${w.translation.replace(/'/g,"\\'")}',this)">
+      ${esc(opt)}
+    </button>
+  `).join('');
+}
+
+function selectVocabQuizOption(chosen, correct, btn) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  $('quizNextBox').style.display = 'block';
+
+  if (chosen === correct) {
+    btn.style.background = '#064e3b';
+    btn.style.color = '#6ee7b7';
+    addGamificationXP(20, 'Viktorina to‘g‘ri');
+  } else {
+    btn.style.background = '#7f1d1d';
+    btn.style.color = '#fca5a5';
+    toast('Noto‘g‘ri javob!');
+  }
+}
+
+function nextVocabQuiz() {
+  quizIdx = (quizIdx + 1) % VOCABULARY_DATA.length;
+  initVocabQuiz();
+}
+function speakCurrentQuizWord() {
+  const w = VOCABULARY_DATA[quizIdx];
+  if (w) speakEnglish(w.word);
+}
+
+// ------------------------------------------
+// 2. KLETKA PUZZLE ENGINE (SENTENCE BUILDER)
+// ------------------------------------------
+let puzzleLevel = 'ALL';
+let puzzleIdx = 0;
+let puzzleAvailable = [];
+let puzzlePlaced = [];
+let isPuzzleTipOpen = false;
+
+function filterPuzzleLevel(lvl) {
+  puzzleLevel = lvl;
+  puzzleIdx = 0;
+  loadPuzzle();
+}
+
+function getFilteredPuzzles() {
+  return PUZZLE_DATA.filter(p => puzzleLevel === 'ALL' || p.level === puzzleLevel);
+}
+
+function loadPuzzle() {
+  const list = getFilteredPuzzles();
+  const p = list[puzzleIdx] || list[0] || PUZZLE_DATA[0];
+  puzzleAvailable = [...p.scrambled];
+  puzzlePlaced = [];
+  isPuzzleTipOpen = false;
+  $('puzzleTipBox').style.display = 'none';
+  $('puzzleResultFeedback').style.display = 'none';
+
+  $('puzzleLevelTag').textContent = `${p.level} · ${p.cat}`;
+  $('puzzleIndexTag').textContent = `Pazl: ${puzzleIdx + 1} / ${list.length}`;
+  $('puzzleUzbekText').textContent = `“${p.fullUz}”`;
+  $('puzzleTipBox').textContent = 'Maslahat: ' + p.tip;
+
+  renderPuzzlePieces();
+}
+
+function renderPuzzle() {
+  loadPuzzle();
+}
+
+function renderPuzzlePieces() {
+  // Placed slots
+  if (puzzlePlaced.length === 0) {
+    $('puzzleWorkspace').innerHTML = '<div style="color:#64748b;font-size:12px;font-style:italic">Pastdagi kletkalarni bosib shu yerga to‘g‘ri tartibda tering...</div>';
+  } else {
+    $('puzzleWorkspace').innerHTML = puzzlePlaced.map((piece, i) => `
+      <button class="btn success small" onclick="removePuzzlePiece(${i})" style="font-weight:700" title="Olib tashlash">
+        <span style="opacity:0.6;margin-right:4px">${i+1}.</span> ${esc(piece)} ✕
+      </button>
+    `).join('');
+  }
+
+  // Bank of available pieces
+  if (puzzleAvailable.length === 0) {
+    $('puzzleBank').innerHTML = '<div style="color:#10b981;font-size:12px;font-weight:600">✓ Barcha kletkalar joylandi. Endi “Tekshirish” tugmasini bosing!</div>';
+  } else {
+    $('puzzleBank').innerHTML = puzzleAvailable.map((piece, i) => `
+      <button class="btn small" style="background:#1e293b;border-color:#334155;font-weight:600" onclick="pickPuzzlePiece(${i})">
+        ${esc(piece)}
+      </button>
+    `).join('');
+  }
+}
+
+function pickPuzzlePiece(i) {
+  const piece = puzzleAvailable.splice(i, 1)[0];
+  puzzlePlaced.push(piece);
+  renderPuzzlePieces();
+}
+
+function removePuzzlePiece(i) {
+  const piece = puzzlePlaced.splice(i, 1)[0];
+  puzzleAvailable.push(piece);
+  renderPuzzlePieces();
+}
+
+function togglePuzzleTip() {
+  isPuzzleTipOpen = !isPuzzleTipOpen;
+  $('puzzleTipBox').style.display = isPuzzleTipOpen ? 'block' : 'none';
+}
+
+function speakPuzzleAudio() {
+  const list = getFilteredPuzzles();
+  const p = list[puzzleIdx] || PUZZLE_DATA[0];
+  speakEnglish(p.fullEn);
+}
+
+function checkCurrentPuzzle() {
+  if (puzzlePlaced.length === 0) {
+    alert("Iltimos, avval kletkalarni joylashtiring!");
+    return;
+  }
+  const list = getFilteredPuzzles();
+  const p = list[puzzleIdx] || PUZZLE_DATA[0];
+
+  const constructed = puzzlePlaced.join(' ').trim().toLowerCase().replace(/[.,!]/g, '');
+  const target = p.chunks.join(' ').trim().toLowerCase().replace(/[.,!]/g, '');
+
+  const box = $('puzzleResultFeedback');
+  box.style.display = 'block';
+
+  if (constructed === target) {
+    box.style.background = '#064e3b';
+    box.style.color = '#6ee7b7';
+    box.innerHTML = '<strong>🎉 Ajoyib!</strong> Kletkalar tartibi 100% grammatik to‘g‘ri terildi! 🔊';
+    speakEnglish(p.fullEn);
+    addGamificationXP(25, 'Kletka Pazl yechildi');
+  } else {
+    box.style.background = '#7f1d1d';
+    box.style.color = '#fca5a5';
+    box.innerHTML = '<strong>❌ Tartibda xatolik bor!</strong> Kletka qoidasiga ko‘ra qaytadan joylashtirib ko‘ring.';
+  }
+}
+
+function nextPuzzle() {
+  const list = getFilteredPuzzles();
+  puzzleIdx = (puzzleIdx + 1) % list.length;
+  loadPuzzle();
+}
+
+// ------------------------------------------
+// 3. GRAMMAR TESTS ENGINE
+// ------------------------------------------
+let grammarIdx = 0;
+let grammarScore = 0;
+let grammarTotalAnswered = 0;
+let grammarAnswered = false;
+
+function renderGrammar() {
+  loadGrammarQuestion();
+}
+
+function loadGrammarQuestion() {
+  grammarAnswered = false;
+  $('btnNextGrammar').style.display = 'none';
+  $('grammarExplanationCard').style.display = 'none';
+
+  const q = GRAMMAR_DATA[grammarIdx] || GRAMMAR_DATA[0];
+  $('grammarTopicTag').textContent = q.topic;
+  $('grammarQuestionIdxTag').textContent = `Savol: ${grammarIdx + 1} / ${GRAMMAR_DATA.length}`;
+  $('grammarScoreBadge').textContent = `${grammarScore} / ${grammarTotalAnswered} ta to‘g‘ri`;
+  $('grammarQuestionText').textContent = q.q;
+
+  $('grammarOptionsBox').innerHTML = q.options.map((opt, i) => `
+    <button class="btn" style="text-align:left;padding:12px;font-weight:600" onclick="selectGrammarOption(${i})">
+      <span style="opacity:0.6;margin-right:6px">${String.fromCharCode(65+i)})</span> ${esc(opt)}
+    </button>
+  `).join('');
+}
+
+function speakGrammarQuestion() {
+  const q = GRAMMAR_DATA[grammarIdx];
+  if (q) speakEnglish(q.q.replace('_______', 'blank'));
+}
+
+function selectGrammarOption(chosenIdx) {
+  if (grammarAnswered) return;
+  grammarAnswered = true;
+  grammarTotalAnswered++;
+
+  const q = GRAMMAR_DATA[grammarIdx];
+  const isCorrect = chosenIdx === q.correct;
+  if (isCorrect) {
+    grammarScore++;
+    addGamificationXP(20, 'Grammatika to‘g‘ri');
+  } else {
+    toast('Noto‘g‘ri javob!');
+  }
+
+  $('grammarScoreBadge').textContent = `${grammarScore} / ${grammarTotalAnswered} ta to‘g‘ri`;
+  $('btnNextGrammar').style.display = 'inline-block';
+  $('grammarExplanationCard').style.display = 'block';
+  $('grammarExplanationText').textContent = q.exp;
+  $('grammarRuleText').textContent = '💡 ' + q.rule;
+
+  // Highlight buttons
+  const btns = $('grammarOptionsBox').querySelectorAll('button');
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) {
+      btn.style.background = '#064e3b';
+      btn.style.color = '#6ee7b7';
+    } else if (i === chosenIdx) {
+      btn.style.background = '#7f1d1d';
+      btn.style.color = '#fca5a5';
+    }
+  });
+}
+
+function nextGrammarQuestion() {
+  grammarIdx = (grammarIdx + 1) % GRAMMAR_DATA.length;
+  loadGrammarQuestion();
+}
+
+function resetGrammarQuiz() {
+  grammarIdx = 0;
+  grammarScore = 0;
+  grammarTotalAnswered = 0;
+  loadGrammarQuestion();
+}
+
+// ------------------------------------------
+// 4. LISTENING ENGINE
+// ------------------------------------------
+let listeningIdx = 0;
+let listeningAnswered = false;
+let sandboxRate = 0.95;
+
+function renderListening() {
+  loadListeningChallenge();
+}
+
+function loadListeningChallenge() {
+  listeningAnswered = false;
+  $('listeningNextBox').style.display = 'none';
+
+  const item = LISTENING_DATA[listeningIdx] || LISTENING_DATA[0];
+  $('listeningLevelTag').textContent = `${item.level} · Tinglab topish`;
+  $('listeningIdxTag').textContent = `Mashq: ${listeningIdx + 1} / ${LISTENING_DATA.length}`;
+  $('listeningSentenceText').textContent = item.sentence.replace(item.missing, ' [ ? ? ? ] ');
+  $('listeningUzbekText').textContent = `“${item.uz}”`;
+
+  $('listeningOptionsBox').innerHTML = item.options.map(opt => `
+    <button class="btn" style="text-align:left;padding:12px;font-weight:600" onclick="selectListeningOption('${opt.replace(/'/g,"\\'")}','${item.missing.replace(/'/g,"\\'")}',this)">
+      ${esc(opt)}
+    </button>
+  `).join('');
+}
+
+function playCurrentListening(rate) {
+  const item = LISTENING_DATA[listeningIdx] || LISTENING_DATA[0];
+  speakEnglish(item.sentence, rate);
+}
+
+function selectListeningOption(chosen, correct, btn) {
+  if (listeningAnswered) return;
+  listeningAnswered = true;
+  $('listeningNextBox').style.display = 'block';
+
+  if (chosen === correct) {
+    btn.style.background = '#064e3b';
+    btn.style.color = '#6ee7b7';
+    addGamificationXP(20, 'Eshitish testi to‘g‘ri');
+  } else {
+    btn.style.background = '#7f1d1d';
+    btn.style.color = '#fca5a5';
+    toast('Noto‘g‘ri, qaytadan eshiting!');
+  }
+}
+
+function nextListeningChallenge() {
+  listeningIdx = (listeningIdx + 1) % LISTENING_DATA.length;
+  loadListeningChallenge();
+}
+
+function setSandboxSpeed(rate) {
+  sandboxRate = rate;
+  toast(`Tezlik: ${rate}x`);
+}
+function speakSandbox() {
+  const txt = ($('sandboxInput')?.value || '').trim();
+  speakEnglish(txt, sandboxRate);
+}
+function runSandboxPreset(txt) {
+  if ($('sandboxInput')) $('sandboxInput').value = txt;
+  speakEnglish(txt, sandboxRate);
+}
+
+// ------------------------------------------
+// 5. STREAK & GAMIFICATION ENGINE
+// ------------------------------------------
+function renderStreak() {
+  const xp = gamification.xp || 140;
+  const streak = gamification.streak || 3;
+
+  const level = Math.floor(xp / 200) + 1;
+  const levelXp = xp % 200;
+  const percent = Math.min(100, Math.round((levelXp / 200) * 100));
+
+  const titles = {
+    1: 'Level 1: Yangi Sayyoh',
+    2: 'Level 2: Kletka Shogirdi',
+    3: 'Level 3: So‘z Ustasi',
+    4: 'Level 4: Grammatika Donosi',
+    5: 'Level 5: Kletka Grossmeysteri'
+  };
+
+  if ($('streakDaysCount')) $('streakDaysCount').textContent = `${streak} kun ketma-ket`;
+  if ($('userLevelTitle')) $('userLevelTitle').textContent = titles[level] || `Level ${level}: Kletka Afsonasi`;
+  if ($('totalUserXP')) $('totalUserXP').textContent = `+${xp} XP`;
+  if ($('xpProgressText')) $('xpProgressText').textContent = `${levelXp} / 200 XP`;
+  if ($('xpProgressBar')) $('xpProgressBar').style.width = `${percent}%`;
+
+  const badges = [
+    { title:'Olovli Start', icon:'🔥', desc:'Birinchi kunlik mashg‘ulot.', unlocked: true },
+    { title:'Pazl Yechuvchi', icon:'🧩', desc:'Kletka pazllarini muvaffaqiyatli terish.', unlocked: xp >= 100 },
+    { title:'Lug‘at Boyi', icon:'📚', desc:'10 dan ortiq yangi so‘z yodlandi.', unlocked: memorizedWords.length >= 3 },
+    { title:'Grammatika Ustasi', icon:'🎓', desc:'Grammar testlarida a’lo natija.', unlocked: xp >= 250 },
+    { title:'Oltin Quloq', icon:'🎧', desc:'Eshitish mashqlarida mukammal natija.', unlocked: xp >= 200 },
+    { title:'Haftalik Afsona', icon:'⚡', desc:'7 kunlik uzluksiz streak.', unlocked: streak >= 7 }
+  ];
+
+  if ($('unlockedBadgesCount')) {
+    $('unlockedBadgesCount').textContent = `${badges.filter(b=>b.unlocked).length} / ${badges.length} ta`;
+  }
+
+  if ($('badgesGrid')) {
+    $('badgesGrid').innerHTML = badges.map(b => `
+      <div class="card" style="margin:0;opacity:${b.unlocked?'1':'0.5'};border-color:${b.unlocked?'#f59e0b':'#1e293b'}">
+        <div style="font-size:28px;margin-bottom:6px">${b.icon}</div>
+        <h4 style="margin:0 0 4px">${esc(b.title)}</h4>
+        <p style="font-size:11px;color:#94a3b8;margin:0 0 6px">${esc(b.desc)}</p>
+        <strong style="font-size:10px;color:${b.unlocked?'#34d399':'#64748b'}">${b.unlocked?'✓ OCHILGAN':'🔒 QULFDA'}</strong>
+      </div>
+    `).join('');
+  }
+}
+
+// ------------------------------------------
+// 6. HOMEWORK ENGINE
+// ------------------------------------------
+function renderHomework() {
+  const pending = homeworks.filter(h => h.status === 'pending').length;
+  if ($('pendingHomeworksCount')) $('pendingHomeworksCount').textContent = `${pending} ta faol`;
+
+  const box = $('homeworkListContainer');
+  if (!box) return;
+
+  if (homeworks.length === 0) {
+    box.innerHTML = '<div class="card empty">Hozircha vazifalar mavjud emas.</div>';
+    return;
+  }
+
+  box.innerHTML = homeworks.map((h, i) => {
+    const isDone = h.status === 'completed';
+    return `
+      <div class="card" style="margin:0;opacity:${isDone?'0.75':'1'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px">
+              <span class="pill" style="font-size:10px">${h.type.toUpperCase()}</span>
+              <strong>${esc(h.title)}</strong>
+            </div>
+            <p style="font-size:12px;color:#cbd5e1;margin-bottom:6px">${esc(h.desc)}</p>
+            <div style="font-size:11px;color:#f59e0b">⏱️ Muddat: ${esc(h.due)} · Yukladi: ${esc(h.by)}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="btn primary small" onclick="jumpToHomeworkTask('${h.type}')">Bajarish ➔</button>
+            <button class="btn small ${isDone?'':'success'}" onclick="toggleHomeworkStatus(${i})">${isDone?'Bajarilgan':'✓ Bajarildi'}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function createHomework() {
+  const title = ($('hwNewTitle')?.value || '').trim();
+  if (!title) { alert('Iltimos, vazifa nomini kiriting!'); return; }
+  const due = ($('hwNewDueDate')?.value || '').trim() || 'Ertaga';
+  const desc = ($('hwNewDesc')?.value || '').trim() || 'Berilgan mashqni bajaring.';
+  const type = $('hwNewType')?.value || 'puzzle';
+
+  homeworks.unshift({
+    id: 'hw_' + Date.now(),
+    title,
+    due,
+    desc,
+    type,
+    status: 'pending',
+    by: "Ustoz Shakheen"
+  });
+  localStorage.setItem('kletka_homeworks', JSON.stringify(homeworks));
+  if ($('hwNewTitle')) $('hwNewTitle').value = '';
+  if ($('hwNewDesc')) $('hwNewDesc').value = '';
+  renderHomework();
+  toast("Yangi vazifa barcha o'quvchilarga biriktirildi!");
+}
+
+function toggleHomeworkStatus(i) {
+  homeworks[i].status = (homeworks[i].status === 'completed') ? 'pending' : 'completed';
+  localStorage.setItem('kletka_homeworks', JSON.stringify(homeworks));
+  renderHomework();
+  toast("Vazifa holati o'zgartirildi!");
+}
+
+function jumpToHomeworkTask(type) {
+  if (type === 'puzzle') showPage('puzzle');
+  else if (type === 'vocab') showPage('vocab');
+  else if (type === 'grammar') showPage('grammar');
+  else showPage('translate');
+}
+
+// ------------------------------------------
+// 7. MATERIALS & EXCEL/CSV/JSON IMPORT ENGINE
+// ------------------------------------------
+let customVocab = JSON.parse(localStorage.getItem('kletka_custom_vocab') || '[]');
+let customPuzzles = JSON.parse(localStorage.getItem('kletka_custom_puzzles') || '[]');
+let customGrammar = JSON.parse(localStorage.getItem('kletka_custom_grammar') || '[]');
+let currentMatTab = 'vocab';
+
+// Merge custom items into active arrays
+function syncAllMaterials() {
+  customVocab.forEach(w => {
+    if (!VOCABULARY_DATA.some(x => x.id === w.id)) VOCABULARY_DATA.push(w);
+  });
+  customPuzzles.forEach(p => {
+    if (!PUZZLE_DATA.some(x => x.id === p.id)) PUZZLE_DATA.push(p);
+  });
+  customGrammar.forEach(g => {
+    if (!GRAMMAR_DATA.some(x => x.id === g.id)) GRAMMAR_DATA.push(g);
+  });
+}
+syncAllMaterials();
+
+function switchMaterialsTab(tab) {
+  currentMatTab = tab;
+  ['Vocab', 'Puzzle', 'Grammar'].forEach(t => {
+    const btn = $('btnMatTab' + t);
+    if (btn) btn.className = 'btn small ' + (tab.toLowerCase() === t.toLowerCase() ? 'primary' : '');
+  });
+  if ($('matUploadHint')) {
+    if (tab === 'vocab') $('matUploadHint').textContent = 'Ustunlar: Word, Translation, Level, Category, Definition, ExampleEn, ExampleUz';
+    if (tab === 'puzzle') $('matUploadHint').textContent = 'Ustunlar: EnglishSentence, UzbekTranslation, Level, Category, Tip';
+    if (tab === 'grammar') $('matUploadHint').textContent = 'Ustunlar: Question, OptionA, OptionB, OptionC, OptionD, CorrectIndex, Explanation';
+  }
+  if ($('matQuickText')) {
+    if (tab === 'vocab') $('matQuickText').placeholder = 'Accomplish = Bajarmoq = B1\nOpportunity = Imkoniyat = A2';
+    if (tab === 'puzzle') $('matQuickText').placeholder = 'I drink coffee every day = Men har kuni kofe ichaman\nShe reads books = U kitoblar o‘qiydi';
+    if (tab === 'grammar') $('matQuickText').placeholder = 'He _______ football = play, plays, played = 1 = 3-shaxs fe’lga s oladi';
+  }
+}
+
+function downloadMatTemplate() {
+  let csv = '';
+  if (currentMatTab === 'vocab') {
+    csv = `Word,Translation,Level,Category,Definition,ExampleEn,ExampleUz,Phonetic
+Inspire,Ilhomlantirmoq,B1,daily,To make someone feel motivated,Teachers inspire students,Ustozlar talabalarni ilhomlantiradi,/ɪnˈspaɪər/
+Crucial,O'ta muhim,B2,ielts,Extremely important,Practice is crucial,Mashq o'ta muhim,/ˈkruː.ʃəl/`;
+  } else if (currentMatTab === 'puzzle') {
+    csv = `EnglishSentence,UzbekTranslation,Level,Category,Tip
+I drink green tea every morning,Men har tong ko'k choy ichaman,A1,Odatlar,Ega fe'l va vaqt tartibi
+They are building a modern school,Ular zamonaviy maktab qurmoqdalar,A2,Jarayon,Present Continuous kletkasi`;
+  } else {
+    csv = `Question,OptionA,OptionB,OptionC,OptionD,CorrectIndex,Explanation
+He _______ to school on foot,go,goes,going,went,1,3-shaxs birlik uchun goes ishlatiladi`;
+  }
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kletka_${currentMatTab}_shablon.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('Shablon yuklab olindi! Excelda ochib to‘ldiring.');
+}
+
+function handleStandaloneFileUpload(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target?.result;
+    if (!text) return;
+
+    try {
+      if (file.name.endsWith('.json')) {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) {
+          if (currentMatTab === 'vocab') {
+            customVocab = [...customVocab, ...parsed];
+            localStorage.setItem('kletka_custom_vocab', JSON.stringify(customVocab));
+          } else if (currentMatTab === 'puzzle') {
+            customPuzzles = [...customPuzzles, ...parsed];
+            localStorage.setItem('kletka_custom_puzzles', JSON.stringify(customPuzzles));
+          } else {
+            customGrammar = [...customGrammar, ...parsed];
+            localStorage.setItem('kletka_custom_grammar', JSON.stringify(customGrammar));
+          }
+          syncAllMaterials();
+          renderMaterialsManager();
+          toast(`✅ ${parsed.length} ta ma’lumot JSON dan qo‘shildi!`);
+        }
+      } else {
+        // CSV parsing
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        let count = 0;
+
+        if (currentMatTab === 'vocab') {
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (i === 0 && (line.toLowerCase().includes('word') || line.toLowerCase().includes("so'z"))) continue;
+            const parts = line.includes(';') ? line.split(';') : line.split(',');
+            if (parts.length >= 2) {
+              const word = parts[0]?.trim();
+              const translation = parts[1]?.trim();
+              if (word && translation) {
+                customVocab.push({
+                  id: 'c_v_' + Date.now() + '_' + i,
+                  word,
+                  translation,
+                  level: parts[2]?.trim() || 'A2',
+                  cat: parts[3]?.trim() || 'daily',
+                  def: parts[4]?.trim() || `${word} — ${translation}`,
+                  en: parts[5]?.trim() || `I know ${word}.`,
+                  uz: parts[6]?.trim() || `Men bilaman.`,
+                  phonetic: parts[7]?.trim() || `/${word.toLowerCase()}/`
+                });
+                count++;
+              }
+            }
+          }
+          localStorage.setItem('kletka_custom_vocab', JSON.stringify(customVocab));
+        } else if (currentMatTab === 'puzzle') {
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (i === 0 && line.toLowerCase().includes('sentence')) continue;
+            const parts = line.includes(';') ? line.split(';') : line.split(',');
+            if (parts.length >= 2) {
+              const fullEn = parts[0]?.trim();
+              const fullUz = parts[1]?.trim();
+              if (fullEn && fullUz) {
+                const words = fullEn.split(/\s+/).filter(Boolean);
+                const chunks = [];
+                for (let w = 0; w < words.length; w += 2) chunks.push(words.slice(w, w + 2).join(' '));
+                customPuzzles.push({
+                  id: 'c_p_' + Date.now() + '_' + i,
+                  level: parts[2]?.trim() || 'A2',
+                  cat: parts[3]?.trim() || 'Qo‘shilgan',
+                  fullEn,
+                  fullUz,
+                  chunks,
+                  scrambled: [...chunks].sort(() => 0.5 - Math.random()),
+                  tip: parts[4]?.trim() || 'Kletka qonuniyati.'
+                });
+                count++;
+              }
+            }
+          }
+          localStorage.setItem('kletka_custom_puzzles', JSON.stringify(customPuzzles));
+        }
+
+        syncAllMaterials();
+        renderMaterialsManager();
+        toast(`✅ ${count} ta yangi ma’lumot CSV dan bazaga qo‘shildi!`);
+      }
+    } catch (err) {
+      alert('Faylni tahlil qilishda xatolik: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function handleStandaloneQuickAdd() {
+  const txt = ($('matQuickText')?.value || '').trim();
+  if (!txt) { alert('Iltimos, matn kiriting!'); return; }
+
+  const lines = txt.split('\n').filter(l => l.trim().length > 0);
+  let count = 0;
+
+  if (currentMatTab === 'vocab') {
+    lines.forEach((line, i) => {
+      const parts = line.split(/[=-]/).map(s => s.trim());
+      if (parts.length >= 2) {
+        customVocab.push({
+          id: 'q_v_' + Date.now() + '_' + i,
+          word: parts[0],
+          translation: parts[1],
+          level: parts[2] || 'A2',
+          cat: 'daily',
+          def: `${parts[0]} — ${parts[1]}`,
+          en: `Example with ${parts[0]}`,
+          uz: `Misol o‘zbekcha`,
+          phonetic: `/${parts[0].toLowerCase()}/`
+        });
+        count++;
+      }
+    });
+    localStorage.setItem('kletka_custom_vocab', JSON.stringify(customVocab));
+  } else if (currentMatTab === 'puzzle') {
+    lines.forEach((line, i) => {
+      const parts = line.split(/[=-]/).map(s => s.trim());
+      if (parts.length >= 2) {
+        const fullEn = parts[0];
+        const fullUz = parts[1];
+        const words = fullEn.split(/\s+/).filter(Boolean);
+        const chunks = [];
+        for (let w = 0; w < words.length; w += 2) chunks.push(words.slice(w, w + 2).join(' '));
+        customPuzzles.push({
+          id: 'q_p_' + Date.now() + '_' + i,
+          level: 'A2',
+          cat: 'Qo‘shilgan',
+          fullEn,
+          fullUz,
+          chunks,
+          scrambled: [...chunks].sort(() => 0.5 - Math.random()),
+          tip: 'Kletka qonuniyati.'
+        });
+        count++;
+      }
+    });
+    localStorage.setItem('kletka_custom_puzzles', JSON.stringify(customPuzzles));
+  }
+
+  syncAllMaterials();
+  $('matQuickText').value = '';
+  renderMaterialsManager();
+  toast(`✅ ${count} ta yangi material bazaga qo‘shildi!`);
+}
+
+function clearStandaloneCustomMaterials() {
+  if (confirm("Qo‘shilgan barcha qo‘shimcha materiallar tozalansinmi?")) {
+    customVocab = [];
+    customPuzzles = [];
+    customGrammar = [];
+    localStorage.removeItem('kletka_custom_vocab');
+    localStorage.removeItem('kletka_custom_puzzles');
+    localStorage.removeItem('kletka_custom_grammar');
+    renderMaterialsManager();
+    toast('Qo‘shimcha materiallar tozalandi.');
+  }
+}
+
+function exportFullMaterialsBackup() {
+  const data = {
+    vocab: VOCABULARY_DATA,
+    puzzles: PUZZLE_DATA,
+    grammar: GRAMMAR_DATA,
+    date: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kletka_barcha_materiallar_backup.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('Barcha materiallar to‘liq zaxiraga olindi!');
+}
+
+function renderMaterialsManager() {
+  if ($('matTotalVocab')) $('matTotalVocab').textContent = `${VOCABULARY_DATA.length} ta`;
+  if ($('matTotalPuzzles')) $('matTotalPuzzles').textContent = `${PUZZLE_DATA.length} ta`;
+  if ($('matTotalGrammar')) $('matTotalGrammar').textContent = `${GRAMMAR_DATA.length} ta`;
 }
 
 initBootAuth();
