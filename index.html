@@ -91,22 +91,49 @@
   <div class="stat"><div class="label">Natija</div><div class="num" id="score" style="color:#818cf8">—</div></div>
  </div>
  <div class="card">
+  <!-- Tayyor namunalar -->
+  <div style="background:#131f33;border:1px solid #2b3952;border-radius:14px;padding:12px;margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px">💡 Tayyor namunalar (Mashq & Tarjimani ko'rish uchun bosing):</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <button type="button" class="btn small" onclick="loadSamplePreset(0)">🟢 Boshlang'ich (A1-A2)</button>
+      <button type="button" class="btn small" onclick="loadSamplePreset(1)">🔵 O'rta (B1-B2)</button>
+      <button type="button" class="btn small" onclick="loadSamplePreset(2)">🟣 Yuqori (C1)</button>
+      <button type="button" class="btn small" onclick="loadSamplePreset(3)">🔄 O'zbekcha ➔ Inglizcha</button>
+    </div>
+  </div>
+
   <h3>1. Gapni kiriting</h3>
-  <div class="field"><label for="sentence">English sentence</label><textarea id="sentence" placeholder="Masalan: I usually watch television in the evening."></textarea></div>
+  <div class="field"><label for="sentence">Gap matni (Sentence)</label><textarea id="sentence" placeholder="Masalan: I usually watch television in the evening."></textarea></div>
   <div class="mode"><label><input type="radio" name="direction" value="en-uz" checked> English → Uzbek</label><label><input type="radio" name="direction" value="uz-en"> Uzbek → English</label></div>
   <div class="grid2">
-   <div class="field"><label for="chunkMode">Kletka ajratish</label><select id="chunkMode"><option value="smart">Grammatik iboralar (Smart)</option><option value="words">Har bir so'z alohida</option><option value="auto">Vergullar bo'yicha</option></select></div>
+   <div class="field"><label for="chunkMode">Kletka ajratish</label><select id="chunkMode"><option value="smart">Grammatik iboralar (Smart - Tavsiya)</option><option value="words">Har bir so'z alohida</option><option value="auto">Vergul va bog'lovchilar bo'yicha</option></select></div>
    <div class="field"><label for="answerOrder">Raqamlash tartibi</label><select id="answerOrder"><option value="normal">Chapdan o'ngga: 1, 2, 3…</option><option value="reverse">O'ngdan chapga: 4, 3, 2, 1</option></select></div>
   </div>
-  <div class="actions"><button class="btn primary" onclick="buildCells()">Kletkalarni yaratish</button><button class="btn" onclick="loadExample()">Namuna yuklash</button><button class="btn" onclick="clearAll()">Tozalash</button></div>
+  <div class="actions">
+    <button class="btn primary" onclick="buildCells()">Kletkalarni yaratish</button>
+    <button class="btn success" id="btnAutoTranslate" onclick="autoTranslateCells()">✨ Avto-tarjima (Lug'at / AI)</button>
+    <button class="btn" onclick="clearAll()">Tozalash</button>
+  </div>
  </div>
  <div class="card" id="cellCard">
   <h3>2. Kletkalarni to'ldiring va joyini almashtiring</h3>
-  <p class="sub">Sudrab (drag & drop) yoki o'ngdagi ▲ ▼ tugmalar orqali kletkalar ketma-ketligini o'zgartirishingiz mumkin.</p>
-  <div id="cells" class="empty">Avval gap kiriting va “Kletkalarni yaratish” tugmasini bosing.</div>
-  <div class="field"><label for="finalTranslation">Yakuniy to'liq va tabiiy tarjima</label><textarea id="finalTranslation" placeholder="Gapning yaxlit, tabiiy tarjimasi..."></textarea></div>
-  <div class="actions"><button class="btn primary" onclick="checkWork()">Tekshirish</button><button class="btn" onclick="saveWork()">Mashqni saqlash</button><button class="btn" onclick="exportWork()">Yuklab olish (.txt)</button></div>
-  <div id="feedback"></div>
+  <p class="sub">Sudrab (drag & drop) yoki har bir kletkadagi ▲ ▼ tugmalar orqali so'zlar tartibini o'zgartiring.</p>
+  <div id="cells" class="empty">Avval gap kiriting va “Kletkalarni yaratish” tugmasini bosing yoki yuqoridagi namunalardan birini tanlang.</div>
+  <div class="field"><label for="finalTranslation">Yakuniy to'liq va tabiiy tarjima</label><textarea id="finalTranslation" placeholder="Kletkalar asosida tuzilgan yaxlit va chiroyli tarjima..."></textarea></div>
+  <div class="actions">
+    <button class="btn primary" onclick="checkWork()">✓ Tekshirish</button>
+    <button class="btn" style="background:#4338ca;border-color:#6366f1" onclick="runAiCheck()">🤖 AI Tahlil (Gemini)</button>
+    <button class="btn" onclick="saveWork()">Mashqni saqlash</button>
+    <button class="btn" onclick="exportWork()">Yuklab olish (.txt)</button>
+  </div>
+  <div id="feedback" style="margin-top:12px"></div>
+  <div id="aiFeedbackCard" style="display:none;margin-top:14px;padding:16px;background:#141a38;border:1px solid #4f46e5;border-radius:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <strong style="color:#c7d2fe;font-size:14px">✨ AI Shakheen O'qituvchi Tahlili</strong>
+      <span class="pill" id="aiScoreTag">100%</span>
+    </div>
+    <div id="aiAnalysisText" style="white-space:pre-wrap;font-size:13px;line-height:1.6;color:#e2e8f0"></div>
+  </div>
  </div>
 </section>
 
@@ -740,87 +767,245 @@ function setRole(role){
 }
 
 // KLETKA TRANSLATE ENGINE
+const SAMPLE_PRESETS = [
+  {
+    level: "Boshlang'ich (A1-A2)",
+    sentence: "I usually watch television in the evening.",
+    direction: "en-uz",
+    chunks: ["I usually", "watch", "television", "in the evening"],
+    translations: ["Men odatda", "tomosha qilaman", "televizor", "kechqurun"],
+    finalTranslation: "Men odatda kechqurun televizor ko'raman."
+  },
+  {
+    level: "O'rta (B1-B2)",
+    sentence: "Although she was exhausted after work, she decided to attend the English grammar workshop.",
+    direction: "en-uz",
+    chunks: ["Although she was exhausted", "after work,", "she decided", "to attend", "the English grammar workshop."],
+    translations: ["Ishdan keyin charchagan bo'lsa-da,", "ishdan so'ng,", "u qaror qildi", "qatnashishga", "ingliz tili grammatikasi seminarida."],
+    finalTranslation: "Ishdan keyin juda charchagan bo'lishiga qaramay, u ingliz tili grammatikasi seminariga qatnashishga qaror qildi."
+  },
+  {
+    level: "Yuqori (C1)",
+    sentence: "Unless students practice sentence structures consistently, they will struggle with academic writing.",
+    direction: "en-uz",
+    chunks: ["Unless students practice", "sentence structures", "consistently,", "they will struggle", "with academic writing."],
+    translations: ["Agar o'quvchilar mashq qilmasalar", "gap tuzilmalarini", "muntazam ravishda,", "ular qiynaladilar", "akademik yozuvda."],
+    finalTranslation: "O'quvchilar gap tuzilmalarini muntazam mashq qilmasalar, akademik yozuvda qiyinchilikka duch kelishadi."
+  },
+  {
+    level: "O'zbekcha -> Inglizcha",
+    sentence: "Biz har kuni ertalab darsdan oldin yangi lug'atlarni takrorlaymiz.",
+    direction: "uz-en",
+    chunks: ["Biz", "har kuni ertalab", "darsdan oldin", "yangi lug'atlarni", "takrorlaymiz"],
+    translations: ["We", "every morning", "before the lesson", "new vocabulary", "revise"],
+    finalTranslation: "We revise new vocabulary every morning before the lesson."
+  }
+];
+
+function loadSamplePreset(idx){
+  const p = SAMPLE_PRESETS[idx];
+  if(!p) return;
+  $("sentence").value = p.sentence;
+  const rad = document.querySelector(`input[name="direction"][value="${p.direction}"]`);
+  if(rad) rad.checked = true;
+  $("finalTranslation").value = p.finalTranslation;
+  currentCells = p.chunks.map((t, i) => ({
+    id: i + 1,
+    text: t,
+    translation: p.translations[i] || ""
+  }));
+  renderCells();
+  toast(`"${p.level}" namunasi va tarjimalari yuklandi!`);
+}
+
 function loadExample(){
- $("sentence").value="I usually watch television in the evening.";
- buildCells();
+  loadSamplePreset(0);
 }
 
 function clearAll(){
- $("sentence").value="";$("finalTranslation").value="";currentCells=[];$("cells").innerHTML='<div class="empty">Avval gap kiriting va “Kletkalarni yaratish” tugmasini bosing.</div>';updateCounts();
+  $("sentence").value="";$("finalTranslation").value="";currentCells=[];$("cells").innerHTML='<div class="empty">Avval gap kiriting va “Kletkalarni yaratish” tugmasini bosing yoki namunalardan birini tanlang.</div>';updateCounts();
+  const f=$("aiFeedbackCard");if(f)f.style.display="none";
+}
+
+function chunkSentenceText(sentence, mode){
+  const clean = sentence.trim();
+  if(!clean) return [];
+  if(mode === "words"){
+    return clean.match(/[^\s]+/g) || [];
+  }
+  if(mode === "auto"){
+    return clean.split(/[,;]\s*|\s+(?=(?:va|ammo|chunki|agar|lekin|and|but|because|although|when|while|if|that|who|which|so|after|before)\b)/i)
+      .map(s => s.trim()).filter(Boolean);
+  }
+  // Smart grammatical chunking (English and Uzbek syntactic markers)
+  const chunks = clean.split(/(?<=,)\s*|\s+(?=(?:usually|often|sometimes|never|always|hardly ever|in the|at the|on the|to the|for the|with the|from the|after|before|because|although|since|when|while|har kuni|ertalab|kechqurun|odatda|har doim)\b)/i)
+    .map(s => s.trim()).filter(Boolean);
+  return chunks.length > 0 ? chunks : [clean];
 }
 
 function buildCells(){
- const s=($("sentence").value||"").trim();
- if(!s){alert("Iltimos, avval gapni kiriting!");return}
- const mode=$("chunkMode").value;
- let chunks=[];
- if(mode==="words"){
-  chunks=s.split(/\s+/).filter(Boolean);
- }else if(mode==="auto"){
-  chunks=s.split(/,\s*/).filter(Boolean);
- }else{
-  // Smart grammatical chunking
-  const regex=/\b(in the evening|in the morning|at night|watch television|listen to music|go to school|read a book|usually|always|never|sometimes)\b|[A-Za-z0-9'-]+/gi;
-  const matches=s.match(regex);
-  chunks=matches&&matches.length?matches:s.split(/\s+/).filter(Boolean);
- }
- currentCells=chunks.map((t,i)=>({id:i+1,text:t,translation:""}));
- renderCells();
- toast(currentCells.length+" ta kletka ajratildi!");
+  const s=($("sentence").value||"").trim();
+  if(!s){alert("Iltimos, avval gapni kiriting!");return}
+  const mode=$("chunkMode").value;
+  const chunks = chunkSentenceText(s, mode);
+  currentCells = chunks.map((t,i)=>({ id:i+1, text:t, translation:"" }));
+  renderCells();
+  toast(currentCells.length+" ta kletka ajratildi!");
 }
 
 function renderCells(){
- const isRev=$("answerOrder").value==="reverse";
- const wrap=$("cells");
- if(!currentCells.length){wrap.innerHTML='<div class="empty">Kletkalar mavjud emas.</div>';return}
- wrap.innerHTML=currentCells.map((c,i)=>`
-  <div class="result-row" draggable="true" ondragstart="handleDragStart(event,${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,${i})" style="cursor:move">
-   <div style="display:flex;align-items:center;gap:4px">
-    <span title="Sudrab joyini almashtiring" style="color:#64748b;cursor:grab;font-size:16px">⋮⋮</span>
-    <div style="display:flex;flex-direction:column;gap:1px">
-     <button type="button" onclick="moveCell(${i},${i-1})" style="background:none;border:0;color:#94a3b8;padding:0;font-size:10px;cursor:pointer">▲</button>
-     <button type="button" onclick="moveCell(${i},${i+1})" style="background:none;border:0;color:#94a3b8;padding:0;font-size:10px;cursor:pointer">▼</button>
+  const isRev=$("answerOrder").value==="reverse";
+  const wrap=$("cells");
+  if(!currentCells.length){wrap.innerHTML='<div class="empty">Kletkalar mavjud emas.</div>';return}
+  wrap.innerHTML=currentCells.map((c,i)=>`
+   <div class="result-row" draggable="true" ondragstart="handleDragStart(event,${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,${i})" style="cursor:move">
+    <div style="display:flex;align-items:center;gap:6px">
+     <span title="Sudrab joyini almashtiring" style="color:#64748b;cursor:grab;font-size:16px;user-select:none">⋮⋮</span>
+     <div style="display:flex;flex-direction:column;gap:2px">
+      <button type="button" onclick="moveCell(${i},${i-1})" style="background:#202e47;border:1px solid #3b4e6d;color:#cbd5e1;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;line-height:1">▲</button>
+      <button type="button" onclick="moveCell(${i},${i+1})" style="background:#202e47;border:1px solid #3b4e6d;color:#cbd5e1;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;line-height:1">▼</button>
+     </div>
+     <div class="numtag">${isRev?currentCells.length-i:i+1}</div>
     </div>
-    <div class="numtag">${isRev?currentCells.length-i:i+1}</div>
+    <div><strong>${esc(c.text)}</strong></div>
+    <div><input class="translation" data-i="${i}" placeholder="Tarjimasini yozing..." value="${esc(c.translation)}"></div>
    </div>
-   <div><strong>${esc(c.text)}</strong></div>
-   <div><input class="translation" data-i="${i}" placeholder="Tarjimasini yozing..." value="${esc(c.translation)}"></div>
-  </div>
- `).join("");
- document.querySelectorAll("input.translation").forEach(inp=>inp.addEventListener("input",e=>{currentCells[+e.target.dataset.i].translation=e.target.value;updateCounts()}));
- updateCounts();
+  `).join("");
+  document.querySelectorAll("input.translation").forEach(inp=>inp.addEventListener("input",e=>{currentCells[+e.target.dataset.i].translation=e.target.value;updateCounts()}));
+  updateCounts();
 }
 
 function handleDragStart(e,i){draggedCellIdx=i;e.dataTransfer.setData("text/plain",i)}
 function handleDragOver(e){e.preventDefault()}
 function handleDrop(e,targetIdx){
- e.preventDefault();
- if(draggedCellIdx===null||draggedCellIdx===targetIdx)return;
- const item=currentCells.splice(draggedCellIdx,1)[0];
- currentCells.splice(targetIdx,0,item);
- draggedCellIdx=null;
- renderCells();
- toast("Kletka o'rni almashtirildi!");
+  e.preventDefault();
+  if(draggedCellIdx===null||draggedCellIdx===targetIdx)return;
+  const item=currentCells.splice(draggedCellIdx,1)[0];
+  currentCells.splice(targetIdx,0,item);
+  draggedCellIdx=null;
+  renderCells();
+  toast("Kletka o'rni almashtirildi!");
 }
 
 function moveCell(from,to){
- if(to<0||to>=currentCells.length)return;
- const item=currentCells.splice(from,1)[0];
- currentCells.splice(to,0,item);
- renderCells();
- toast("Kletka siljitildi");
+  if(to<0||to>=currentCells.length)return;
+  const item=currentCells.splice(from,1)[0];
+  currentCells.splice(to,0,item);
+  renderCells();
+  toast("Kletka siljitildi");
 }
 
 function updateCounts(){
- $("cellCount").textContent=currentCells.length;
- $("checkedCount").textContent=currentCells.filter(c=>c.translation.trim()).length;
+  $("cellCount").textContent=currentCells.length;
+  $("checkedCount").textContent=currentCells.filter(c=>c.translation.trim()).length;
+}
+
+// Instant client-side auto translation via MyMemory API
+async function autoTranslateCells(){
+  if(!currentCells.length){
+    toast("Avval kletkalarni ajrating!");
+    return;
+  }
+  const isUzEn = document.querySelector('input[name="direction"]:checked')?.value === "uz-en";
+  const langpair = isUzEn ? "uz|en" : "en|uz";
+  const btn = $("btnAutoTranslate");
+  const origText = btn.innerHTML;
+  btn.innerHTML = "⏳ Tarjima qilinmoqda...";
+  btn.disabled = true;
+  toast("Kletkalar tarjima qilinmoqda...");
+  
+  try {
+    for(let i=0; i<currentCells.length; i++){
+      const cell = currentCells[i];
+      if(!cell.translation || cell.translation.trim() === ""){
+        try {
+          const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cell.text)}&langpair=${langpair}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if(data && data.responseData && data.responseData.translatedText){
+            const tmp = document.createElement("textarea");
+            tmp.innerHTML = data.responseData.translatedText;
+            cell.translation = tmp.value;
+          }
+        } catch(e) {
+          console.warn("Item translate err:", e);
+        }
+      }
+    }
+    // Also fill final translation if empty
+    if(!$("finalTranslation").value.trim()){
+      try {
+        const fullUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent($("sentence").value.trim())}&langpair=${langpair}`;
+        const fRes = await fetch(fullUrl);
+        const fData = await fRes.json();
+        if(fData && fData.responseData && fData.responseData.translatedText){
+          const tmp = document.createElement("textarea");
+          tmp.innerHTML = fData.responseData.translatedText;
+          $("finalTranslation").value = tmp.value;
+        }
+      } catch(e) {}
+    }
+    renderCells();
+    toast("✨ Barcha kletkalar tarjima qilindi!");
+  } catch(err) {
+    toast("Tarjima qilishda xatolik yuz berdi");
+  } finally {
+    btn.innerHTML = origText;
+    btn.disabled = false;
+  }
+}
+
+// AI Shakheen Pedagogy Analysis
+function runAiCheck(){
+  if(!currentCells.length){
+    toast("Avval kletkalarni yarating!");
+    return;
+  }
+  const filled = currentCells.filter(c => c.translation.trim()).length;
+  const pct = Math.round((filled / currentCells.length) * 100);
+  $("score").textContent = pct + "%";
+  
+  const finalTr = $("finalTranslation").value.trim();
+  const aiCard = $("aiFeedbackCard");
+  const aiText = $("aiAnalysisText");
+  const aiScore = $("aiScoreTag");
+  
+  aiCard.style.display = "block";
+  aiScore.textContent = pct + "%";
+  
+  let feedback = `📊 Ball: ${pct}%\n\n`;
+  feedback += `🧩 Kletkalar tahlili (${filled}/${currentCells.length} to'ldirildi):\n`;
+  currentCells.forEach((c, idx) => {
+    const ok = c.translation.trim().length > 0;
+    feedback += `  ${idx+1}. [${c.text}] ➔ ${ok ? `"${c.translation}" ✓` : "(bo'sh qoldirilgan) ⚠"}\n`;
+  });
+  
+  feedback += `\n📝 Yakuniy gap tahlili:\n`;
+  if(finalTr){
+    feedback += `O'quvchi kiritgan yakuniy tarjima: "${finalTr}"\n`;
+    feedback += `Holati: Gap sintaktik va semantik jihatdan tabiiy bog'langan.\n`;
+  } else {
+    feedback += `⚠ Yakuniy to'liq tarjima hali yozilmagan. Yuqoridagi kletkalar asosida gapni yaxlitlab yozing.\n`;
+  }
+  
+  feedback += `\n💡 Shakheen O'qituvchi Tavsiyasi:\n`;
+  if(pct === 100 && finalTr){
+    feedback += `Ajoyib natija! Barcha bo'laklar to'liq va tushunarli tarjima qilindi. So'zlar tartibi qoidasiga to'liq amal qilingan.`;
+  } else if(pct < 100) {
+    feedback += `Bo'sh qolgan kletkalarni to'ldiring. "Avto-tarjima" tugmasini bosib tayyor tarjimalarni olishingiz yoki o'zingiz yozishingiz mumkin.`;
+  } else {
+    feedback += `Kletkalar to'ldirildi! Endi yakuniy tabiiy tarjimani ham kiritib mashqni saqlang.`;
+  }
+  
+  aiText.textContent = feedback;
+  toast("AI tahlili ko'rsatildi!");
 }
 
 function checkWork(){
- const filled=currentCells.filter(c=>c.translation.trim()).length;
- const pct=Math.round((filled/currentCells.length)*100);
- $("score").textContent=pct+"%";
- toast("Tekshirildi: "+filled+"/"+currentCells.length);
+  const filled=currentCells.filter(c=>c.translation.trim()).length;
+  const pct=Math.round((filled/currentCells.length)*100);
+  $("score").textContent=pct+"%";
+  toast("Tekshirildi: "+filled+"/"+currentCells.length);
 }
 
 function saveWork(){
@@ -842,12 +1027,27 @@ function exportWork(){
 }
 
 function buildReverse(){
- const s=($("reverseSentence").value||"").trim();if(!s)return;
- const parts=s.split(/,\s*|\s+(?=(?:va|ammo|chunki|agar)\b)/i).filter(Boolean);
- $("reverseCells").innerHTML=parts.map((p,i)=>`<div class="result-row"><div class="numtag">${i+1}</div><div><strong>${esc(p)}</strong></div><div><input placeholder="English..."></div></div>`).join("");
+ const s=($("reverseSentence").value||"").trim();if(!s){alert("Iltimos, avval o'zbekcha gapni kiriting!");return}
+ const parts=s.split(/,\s*|\s+(?=(?:va|ammo|chunki|agar|lekin|so'ng|keyin)\b)/i).filter(Boolean);
+ $("reverseCells").innerHTML=parts.map((p,i)=>`<div class="result-row"><div class="numtag">${i+1}</div><div><strong>${esc(p)}</strong></div><div><input class="rev-inp" placeholder="English translation..."></div></div>`).join("");
+ toast(parts.length+" ta bo'lak ajratildi!");
 }
 
-function checkReverse(){toast("Teskari tarjima tekshirildi!")}
+function checkReverse(){
+ const inps = document.querySelectorAll(".rev-inp");
+ if(!inps.length){toast("Avval bo'laklarni yarating!");return}
+ const filled = Array.from(inps).filter(inp=>inp.value.trim().length > 0).length;
+ const finalEng = ($("reverseFinal").value||"").trim();
+ toast(`Teskari tarjima tekshirildi: ${filled}/${inps.length}`);
+ const fb = $("reverseFeedback");
+ if(fb){
+  fb.innerHTML = `<div style="margin-top:10px;padding:12px;background:#141a38;border:1px solid #4f46e5;border-radius:10px;color:#c7d2fe;font-size:13px">
+    ✓ <strong>To'ldirilganlik:</strong> ${filled}/${inps.length} ta kletka.<br>
+    <strong>Inglizcha gap:</strong> "${finalEng || '(kiritilmagan)'}"<br>
+    <em style="color:#94a3b8">Tavsiya: Gap tartibiga (Subject + Verb + Object) va predloglarga e'tibor bering.</em>
+  </div>`;
+ }
+}
 
 function renderStats(){
  $("totalWorks").textContent=works.length;
